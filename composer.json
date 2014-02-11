@@ -1,0 +1,15 @@
+{
+	"name": "enet/migrate",
+	"description": "Database migrations",
+	"license": "GPL-2.0+",
+	"type": "typo3-cms-extension",
+	"authors": [
+		{
+			"name": "Helge Funk",
+			"email": "helge.funk@e-net.info"
+		}
+	],
+	"require": {
+		"enet/typo3-cms-installers": "*"
+	}
+}
