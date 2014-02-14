@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T11:44:44Z" product-name="migrate">
+		<header/>
+		<body>
+
+			<trans-unit id="version.description">
+				<source>version</source>
+			</trans-unit>
+			<trans-unit id="extension_key.description">
+				<source>extensionKey</source>
+			</trans-unit>
+			<trans-unit id="script_path.description">
+				<source>scriptPath</source>
+			</trans-unit>
+			<trans-unit id="query.description">
+				<source>query</source>
+			</trans-unit>
+			<trans-unit id="applied.description">
+				<source>applied</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

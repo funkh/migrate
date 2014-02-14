@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T11:44:44Z" product-name="migrate">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_migrate_domain_model_migration">
+				<source>Migration</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.version">
+				<source>version</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.extension_key">
+				<source>extensionKey</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.script_path">
+				<source>scriptPath</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.query">
+				<source>query</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.applied">
+				<source>applied</source>
+			</trans-unit>
+			
+		</body>
+	</file>
+</xliff>

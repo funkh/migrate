@@ -1,0 +1,12 @@
+
+ # Module configuration
+module.tx_migrate {
+	persistence {
+		storagePid = {$module.tx_migrate.persistence.storagePid}
+	}
+	view {
+		templateRootPath = {$module.tx_migrate.view.templateRootPath}
+		partialRootPath = {$module.tx_migrate.view.partialRootPath}
+		layoutRootPath = {$module.tx_migrate.view.layoutRootPath}
+	}
+}
