@@ -52,6 +52,29 @@ class MigrationTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	/**
 	 * @test
 	 */
+	public function getTypeReturnsInitialValueForInteger() {
+		$this->assertSame(
+			0,
+			$this->subject->getType()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function setTypeForIntegerSetsType() {
+		$this->subject->setType(12);
+
+		$this->assertAttributeEquals(
+			12,
+			'type',
+			$this->subject
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function getVersionReturnsInitialValueForString() {
 		$this->assertSame(
 			'',

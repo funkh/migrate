@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T11:44:44Z" product-name="migrate">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T13:22:38Z" product-name="migrate">
 		<header/>
 		<body>
 
 			<trans-unit id="tx_migrate_domain_model_migration">
 				<source>Migration</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type">
+				<source>Type</source>
+			</trans-unit>
+
+			<trans-unit id="tx_migrate_domain_model_migration.type.undefined">
+				<source>undefined</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type.extconf">
+				<source>extconf</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type.database">
+				<source>database</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript">
+				<source>typoscript</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.page">
+				<source>typoscript.page</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.template">
+				<source>typoscript.template</source>
+			</trans-unit>
+
+
 			<trans-unit id="tx_migrate_domain_model_migration.version">
 				<source>Version</source>
 			</trans-unit>

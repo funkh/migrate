@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T11:44:44Z" product-name="migrate">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-02-14T13:22:38Z" product-name="migrate">
 		<header/>
 		<body>
 
+			<trans-unit id="type.description">
+				<source>type</source>
+			</trans-unit>
 			<trans-unit id="version.description">
 				<source>version</source>
 			</trans-unit>

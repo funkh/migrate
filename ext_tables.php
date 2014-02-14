@@ -33,7 +33,7 @@ if (TYPO3_MODE === 'BE') {
 $TCA['tx_migrate_domain_model_migration'] = array(
 	'ctrl' => array(
 		'title'	=> 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration',
-		'label' => 'version',
+		'label' => 'type',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
@@ -53,7 +53,7 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'version,extension_key,script_path,query,applied,',
+		'searchFields' => 'type,version,extension_key,script_path,query,applied,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Migration.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
 	),

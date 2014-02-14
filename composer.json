@@ -10,6 +10,7 @@
 		}
 	],
 	"require": {
-		"enet/typo3-cms-installers": "*"
+		"enet/typo3-cms-installers": "*",
+		"symfony/yaml": "~2.4"
 	}
 }

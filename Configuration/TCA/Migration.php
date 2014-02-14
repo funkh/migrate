@@ -6,16 +6,16 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_migrate_domain_model_migration'] = array(
 	'ctrl' => $TCA['tx_migrate_domain_model_migration']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, version, extension_key, script_path, query, applied',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, version, extension_key, script_path, query, applied',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, version, extension_key, script_path, query, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, version, extension_key, script_path, query, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
 	),
 	'columns' => array(
-	
+
 		'sys_language_uid' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
@@ -56,7 +56,7 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 				'max' => 255,
 			)
 		),
-	
+
 		'hidden' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
@@ -96,13 +96,32 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 				),
 			),
 		),
+		'type' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type',
+			'config' => array(
+				'type' => 'select',
+				'items' => array(
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.undefined', \Enet\Migrate\Domain\Model\Migration::TYPE_UNDEFINED),
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.extconf', \Enet\Migrate\Domain\Model\Migration::TYPE_EXTCONF),
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.database', \Enet\Migrate\Domain\Model\Migration::TYPE_DATABASE),
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT),
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.page', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_PAGE),
+					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.template', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_TEMPLATE),
+				),
+				'size' => 1,
+				'maxitems' => 1,
+				'eval' => ''
+			),
+		),
 		'version' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.version',
 			'config' => array(
 				'type' => 'input',
-				'size' => 30,
-				'eval' => 'trim'
+				'size' => 5,
+				'max' => 5,
+				'eval' => 'trim,num'
 			),
 		),
 		'extension_key' => array(

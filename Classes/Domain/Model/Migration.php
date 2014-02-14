@@ -33,6 +33,43 @@ namespace Enet\Migrate\Domain\Model;
  */
 class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
+	const TYPE_UNDEFINED = 0;
+	const TYPE_EXTCONF = 1;
+	const TYPE_DATABASE = 2;
+	const TYPE_TYPOSCRIPT = 3;
+	const TYPE_TYPOSCRIPT_PAGE = 4;
+	const TYPE_TYPOSCRIPT_TEMPLATE = 5;
+
+	/**
+	 * @var array
+	 */
+	protected static $migrationPaths = array(
+		self::TYPE_EXTCONF => 'Migrations',
+		self::TYPE_DATABASE => 'Migrations/Database',
+		self::TYPE_TYPOSCRIPT => 'Migrations/TypoScript',
+		self::TYPE_TYPOSCRIPT_PAGE => 'Migrations/TypoScript/Page',
+		self::TYPE_TYPOSCRIPT_TEMPLATE => 'Migrations/TypoScript/Template',
+	);
+
+	/**
+	 * @param $type
+	 * @return mixed
+	 */
+	public static function getMigrationScriptPathByType($type) {
+		if (isset(self::$migrationPaths[$type])) {
+			return self::$migrationPaths[$type];
+		} else {
+			// @todo: throw exception
+		}
+	}
+
+	/**
+	 * type
+	 *
+	 * @var integer
+	 */
+	protected $type = 0;
+
 	/**
 	 * version
 	 *
@@ -69,12 +106,33 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $applied = FALSE;
 
 	/**
+	 * Returns the type
+	 *
+	 * @return integer $type
+	 */
+	public function getType() {
+
+		return $this->type;
+	}
+
+	/**
+	 * Sets the type
+	 *
+	 * @param integer $type
+	 * @return void
+	 */
+	public function setType($type) {
+
+		$this->type = $type;
+	}
+
+	/**
 	 * Returns the version
 	 *
 	 * @return string $version
 	 */
 	public function getVersion() {
-		
+
 		return $this->version;
 	}
 
@@ -85,7 +143,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setVersion($version) {
-		
+
 		$this->version = $version;
 	}
 
@@ -95,7 +153,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $extensionKey
 	 */
 	public function getExtensionKey() {
-		
+
 		return $this->extensionKey;
 	}
 
@@ -106,7 +164,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setExtensionKey($extensionKey) {
-		
+
 		$this->extensionKey = $extensionKey;
 	}
 
@@ -116,7 +174,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $scriptPath
 	 */
 	public function getScriptPath() {
-		
+
 		return $this->scriptPath;
 	}
 
@@ -127,7 +185,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setScriptPath($scriptPath) {
-		
+
 		$this->scriptPath = $scriptPath;
 	}
 
@@ -137,7 +195,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $query
 	 */
 	public function getQuery() {
-		
+
 		return $this->query;
 	}
 
@@ -148,7 +206,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setQuery($query) {
-		
+
 		$this->query = $query;
 	}
 
@@ -158,7 +216,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return boolean $applied
 	 */
 	public function getApplied() {
-		
+
 		return $this->applied;
 	}
 
@@ -169,7 +227,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setApplied($applied) {
-		
+
 		$this->applied = $applied;
 	}
 
@@ -179,7 +237,7 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return boolean
 	 */
 	public function isApplied() {
-		
+
 		return $this->getApplied();
 	}
 
