@@ -33,6 +33,7 @@ namespace Enet\Migrate\Domain\Model;
  */
 class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
+	const BASE_PATH = 'Migration';
 	const TYPE_UNDEFINED = 0;
 	const TYPE_EXTCONF = 1;
 	const TYPE_DATABASE = 2;
@@ -44,11 +45,11 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var array
 	 */
 	protected static $migrationPaths = array(
-		self::TYPE_EXTCONF => 'Migrations',
-		self::TYPE_DATABASE => 'Migrations/Database',
-		self::TYPE_TYPOSCRIPT => 'Migrations/TypoScript',
-		self::TYPE_TYPOSCRIPT_PAGE => 'Migrations/TypoScript/Page',
-		self::TYPE_TYPOSCRIPT_TEMPLATE => 'Migrations/TypoScript/Template',
+		self::TYPE_EXTCONF => 'Migration',
+		self::TYPE_DATABASE => 'Migration/Database',
+		self::TYPE_TYPOSCRIPT => 'Migration/TypoScript',
+		self::TYPE_TYPOSCRIPT_PAGE => 'Migration/TypoScript/Page',
+		self::TYPE_TYPOSCRIPT_TEMPLATE => 'Migration/TypoScript/Template',
 	);
 
 	/**
