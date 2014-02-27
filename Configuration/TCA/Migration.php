@@ -153,6 +153,26 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 				'eval' => 'trim'
 			),
 		),
+		'configuration' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.configuration',
+			'config' => array(
+				'type' => 'text',
+				'cols' => 40,
+				'rows' => 15,
+				'eval' => 'trim'
+			),
+		),
+		'raw_data' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.raw_data',
+			'config' => array(
+				'type' => 'text',
+				'cols' => 40,
+				'rows' => 15,
+				'eval' => 'trim'
+			),
+		),
 		'applied' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.applied',

@@ -53,6 +53,8 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
+		'type' => 'type',
+		'rootLevel' => 1,
 		'searchFields' => 'type,version,extension_key,script_path,query,applied,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Migration.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_migrate_domain_model_migration.gif'

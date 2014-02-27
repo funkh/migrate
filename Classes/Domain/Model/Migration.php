@@ -104,6 +104,20 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $query = '';
 
 	/**
+	 * configuration
+	 *
+	 * @var string
+	 */
+	protected $configuration = '';
+
+	/**
+	 * rawData
+	 *
+	 * @var string
+	 */
+	protected $rawData = '';
+
+	/**
 	 * applied
 	 *
 	 * @var boolean
@@ -213,6 +227,44 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function setQuery($query) {
 
 		$this->query = $query;
+	}
+
+	/**
+	 * Getter for configuration
+	 *
+	 * @return string configuration
+	 */
+	public function getConfiguration() {
+		return $this->configuration;
+	}
+
+	/**
+	 * Setter for configuration
+	 *
+	 * @param string $configuration
+	 * @return void
+	 */
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
+	}
+
+	/**
+	 * Getter for rawData
+	 *
+	 * @return string rawData
+	 */
+	public function getRawData() {
+		return $this->rawData;
+	}
+
+	/**
+	 * Setter for rawData
+	 *
+	 * @param string $rawData
+	 * @return void
+	 */
+	public function setRawData($rawData) {
+		$this->rawData = $rawData;
 	}
 
 	/**
