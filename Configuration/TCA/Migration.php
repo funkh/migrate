@@ -121,9 +121,8 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.version',
 			'config' => array(
 				'type' => 'input',
-				'size' => 5,
-				'max' => 5,
-				'eval' => 'trim,num'
+				'size' => 10,
+				'eval' => 'trim'
 			),
 		),
 		'extension_key' => array(
