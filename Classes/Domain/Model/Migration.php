@@ -37,9 +37,11 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	const TYPE_UNDEFINED = 0;
 	const TYPE_EXTCONF = 1;
 	const TYPE_DATABASE = 2;
-	const TYPE_TYPOSCRIPT = 3;
-	const TYPE_TYPOSCRIPT_PAGE = 4;
-	const TYPE_TYPOSCRIPT_TEMPLATE = 5;
+	#const TYPE_TYPOSCRIPT = 3;
+	const TYPE_TYPOSCRIPT_PAGE_TSCONFIG = 4;
+	const TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS = 5;
+	const TYPE_TYPOSCRIPT_TEMPLATE_SETUP = 6;
+	const TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC = 7;
 
 	/**
 	 * @var array
@@ -47,9 +49,11 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected static $migrationPaths = array(
 		self::TYPE_EXTCONF => 'Migration',
 		self::TYPE_DATABASE => 'Migration/Database',
-		self::TYPE_TYPOSCRIPT => 'Migration/TypoScript',
-		self::TYPE_TYPOSCRIPT_PAGE => 'Migration/TypoScript/Page',
-		self::TYPE_TYPOSCRIPT_TEMPLATE => 'Migration/TypoScript/Template',
+		#self::TYPE_TYPOSCRIPT => 'Migration/TypoScript',
+		self::TYPE_TYPOSCRIPT_PAGE_TSCONFIG => 'Migration/TypoScript/PageTsConfig',
+		self::TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS => 'Migration/TypoScript/Template/Constants',
+		self::TYPE_TYPOSCRIPT_TEMPLATE_SETUP => 'Migration/TypoScript/Template/Setup',
+		#self::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC => 'Migration/TypoScript/Template/IncludeStatic',
 	);
 
 	/**
