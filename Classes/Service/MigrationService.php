@@ -31,6 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @todo: rename to PackageMigrationService or so...
+ * @todo: refactor this whole class
  */
 class MigrationService {
 
@@ -45,12 +46,6 @@ class MigrationService {
 	protected $configurationManager;
 
 	/**
-	 * packageInstallPath
-	 * @var string
-	 */
-	protected $packageInstallPath;
-
-	/**
 	 * @var \TYPO3\Flow\Package\PackageInterface
 	 */
 	protected $package;
@@ -63,78 +58,36 @@ class MigrationService {
 	/**
 	 * @var array
 	 */
-	protected $configuration;
+	protected $configuration = array();
 
 	/**
-	 * @var bool
+	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 */
-	protected $dryRun = FALSE;
-
-	/**
-	 * Getter for packageInstallPath
-	 *
-	 * @return string packageInstallPath
-	 */
-	public function getPackageInstallPath() {
-		return $this->packageInstallPath;
-	}
-
-	/**
-	 * Setter for packageInstallPath
-	 *
-	 * @param string $packageInstallPath
-	 * @return void
-	 */
-	public function setPackageInstallPath($packageInstallPath) {
-		$this->packageInstallPath = $packageInstallPath;
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getAbsolutePackageInstallPath() {
-		return getcwd() . DIRECTORY_SEPARATOR . $this->getPackageInstallPath();
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getExtensionKeyFromCurrentPackage() {
-		return \Enet\Composer\Utility\PackageUtility::getExtensionKeyFromPackage($this->package);
-	}
-
-	/**
-	 *
-	 */
-	public function __construct() {
+	public function __construct(\TYPO3\Flow\Package\PackageInterface $package) {
 		\Enet\Migrate\Utility\ComposerUtility::initializeAutoloading();
 		$this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 		$this->configurationManager = $this->objectManager->get('TYPO3\CMS\Core\Configuration\ConfigurationManager');
 		$this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
+		$this->package = $package;
+
+		try {
+			$yamlConfigurationFile = $this->package->getPackagePath() . Migration::BASE_PATH . '/Migrations.yaml';
+			if (is_file($yamlConfigurationFile)) {
+				$this->configuration = \Symfony\Component\Yaml\Yaml::parse($yamlConfigurationFile);
+				$this->sortDatabaseMigrationsByPriority();
+			}
+		} catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+			$this->output->write('<error>Could not parse migrations yaml file: ' . $e->getParsedFile() . '</error>', TRUE);
+		}
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 * @return bool
 	 */
-	public function migratePackage(\TYPO3\Flow\Package\PackageInterface $package) {
-		$this->package = $package;
+	public function migratePackage() {
 		$migrationErrors = 0;
 
-		$yamlConfigurationFile = $this->package->getPackagePath() . Migration::BASE_PATH . '/Migrations.yaml';
-		if (!is_file($yamlConfigurationFile)) {
-			return;
-		}
-
-		$this->output->write('Migrating ' . $package->getPackageKey() . '... ');
-		try {
-			$this->configuration = \Symfony\Component\Yaml\Yaml::parse($yamlConfigurationFile);
-			$this->sortDatabaseMigrationsByPriority();
-		} catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
-			$this->output->write('<error>Could not parse migrations yaml file: ' . $e->getParsedFile() . '</error>', TRUE);
-			$migrationErrors++;
-		}
-
+		$this->output->write('Migrating ' . $this->package->getPackageKey() . '... ');
 		$this->migrateExtensionConfiguration();
 		$this->migrateDatabase();
 		$this->migratePageTsConfig();
@@ -386,26 +339,21 @@ class MigrationService {
 	 *
 	 */
 	protected function migrateExtensionConfiguration() {
-		// @todo make migrate function more generic
-		$extensionConfigurationFile = 'ExtensionConfiguration.php';
-		$absoluteExtensionConfigurationFile = $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_EXTCONF) . DIRECTORY_SEPARATOR . $extensionConfigurationFile;
-		if (
-			is_file($absoluteExtensionConfigurationFile)
-			&& !$this->hasMigration(Migration::TYPE_EXTCONF, $this->getPackageVersion(), $extensionConfigurationFile)
-		) {
-			$extensionConfiguration = include $absoluteExtensionConfigurationFile;
-			if (is_array($extensionConfiguration) && !$this->dryRun) {
-				$this->configurationManager->setLocalConfigurationValueByPath(
-					'EXT/extConf/' . $this->package->getPackageKey(),
-					serialize($extensionConfiguration)
-				);
-				$this->addMigration(
-					Migration::TYPE_EXTCONF,
-					$this->getPackageVersion(),
-					$extensionConfigurationFile,
-					serialize($extensionConfiguration)
-				);
-			}
+		if (!$this->hasNotAppliedExtensionConfigurationMigration()) {
+			return;
+		}
+		$extensionConfiguration = include $this->getAbsoluteExtensionConfigurationFilePathAndName();
+		if (is_array($extensionConfiguration) && !$this->dryRun) {
+			$this->configurationManager->setLocalConfigurationValueByPath(
+				'EXT/extConf/' . $this->package->getPackageKey(),
+				serialize($extensionConfiguration)
+			);
+			$this->addMigration(
+				Migration::TYPE_EXTCONF,
+				$this->getPackageVersion(),
+				$this->getExtensionConfigurationFileName(),
+				serialize($extensionConfiguration)
+			);
 		}
 	}
 
@@ -488,48 +436,16 @@ class MigrationService {
 	/**
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 * @return boolean
-	 * @todo refactor according to Migrations.yaml file
 	 */
 	public function hasPackageMigrations(\TYPO3\Flow\Package\PackageInterface $package) {
-
-		$absolutePackageInstallPath = rtrim($package->getPackagePath(), '/');
-		$packageHasMigrations = FALSE;
-
-		$migrationsBasePath = array(
-			$absolutePackageInstallPath,
-			Migration::getMigrationScriptPathByType(Migration::BASE_PATH),
-		);
-		if (is_dir(implode(DIRECTORY_SEPARATOR, $migrationsBasePath))) {
-
-			$extensionConfigurationPathAndFileName = array(
-				$package->getPackagePath(),
-				Migration::getMigrationScriptPathByType(Migration::TYPE_EXTCONF),
-				'ExtensionConfiguration.php'
-			);
-			if (is_file(implode(DIRECTORY_SEPARATOR, $extensionConfigurationPathAndFileName))) {
-				$packageHasMigrations = TRUE;
-			}
-
-			$databaseMigrationsBasePath = array(
-				$absolutePackageInstallPath,
-				Migration::getMigrationScriptPathByType(Migration::TYPE_DATABASE),
-			);
-			if (is_dir(implode(DIRECTORY_SEPARATOR, $databaseMigrationsBasePath))) {
-				// @todo: check more reliable
-				$packageHasMigrations = TRUE;
-			}
-
-			/*$typoScriptMigrationsBasePath = array(
-				$absolutePackageInstallPath,
-				Migration::getMigrationScriptPathByType(Migration::TYPE_TYPOSCRIPT),
-			);
-			if (is_dir(implode(DIRECTORY_SEPARATOR, $typoScriptMigrationsBasePath))) {
-				// @todo: check more reliable
-				$packageHasMigrations = TRUE;
-			}*/
-
-		}
-		return $packageHasMigrations;
+		$hasPackageMigrations =
+			$this->hasNotAppliedPageTsConfigMigrations()
+			|| $this->hasNotAppliedTemplateConstantsTsMigrations()
+			|| $this->hasNotAppliedTemplateSetupTsMigrations()
+			|| $this->hasNotAppliedTemplateIncludeStaticMigrations()
+			|| $this->hasNotAppliedDatabaseMigrations()
+			|| $this->hasNotAppliedExtensionConfigurationMigration();
+		return $hasPackageMigrations;
 	}
 
 	/**
@@ -545,5 +461,146 @@ class MigrationService {
 				return $package->getVersion();
 			}
 		}
+	}
+
+	/**
+	 * @return bool
+	 * @todo: refactor, same conditions are used in migrate function
+	 */
+	protected function hasNotAppliedPageTsConfigMigrations() {
+		$hasNotAppliedPageTsConfigMigrations = FALSE;
+		$pageTConfigMigrationsPath = $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_TYPOSCRIPT_PAGE_TSCONFIG);
+		if (is_dir($pageTConfigMigrationsPath) && isset($this->configuration['TypoScript']['PageTsConfig'])) {
+			foreach ($this->configuration['TypoScript']['PageTsConfig'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $pageTConfigMigrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'ts'
+					|| $this->hasMigration(Migration::TYPE_TYPOSCRIPT_PAGE_TSCONFIG, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+			}
+			$hasNotAppliedPageTsConfigMigrations = TRUE;
+		}
+		return $hasNotAppliedPageTsConfigMigrations;
+	}
+
+	/**
+	 * @return bool
+	 * @todo: refactor, same conditions are used in migrate function
+	 */
+	protected function hasNotAppliedTemplateConstantsTsMigrations() {
+		$hasNotAppliedTemplateConstantsTsMigrations = FALSE;
+		$templateConstantsTsMigrationsPath = $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS);
+		if (is_dir($templateConstantsTsMigrationsPath) && isset($this->configuration['TypoScript']['Template']['Constants'])) {
+			foreach ($this->configuration['TypoScript']['Template']['Constants'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $templateConstantsTsMigrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'ts'
+					|| $this->hasMigration(Migration::TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+				$hasNotAppliedTemplateConstantsTsMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedTemplateConstantsTsMigrations;
+	}
+
+	/**
+	 * @return bool
+	 * @todo: refactor, same conditions are used in migrate function
+	 */
+	protected function hasNotAppliedTemplateSetupTsMigrations() {
+		$hasNotAppliedTemplateSetupTsMigrations = FALSE;
+		$migrationsPath = $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_TYPOSCRIPT_TEMPLATE_SETUP);
+		if (is_dir($migrationsPath) && isset($this->configuration['TypoScript']['Template']['Setup'])) {
+			foreach ($this->configuration['TypoScript']['Template']['Setup'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $migrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'ts'
+					|| $this->hasMigration(Migration::TYPE_TYPOSCRIPT_TEMPLATE_SETUP, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+				$hasNotAppliedTemplateSetupTsMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedTemplateSetupTsMigrations;
+	}
+
+	/**
+	 * @return bool
+	 * @todo: refactor, same conditions are used in migrate function
+	 */
+	protected function hasNotAppliedTemplateIncludeStaticMigrations() {
+		$hasNotAppliedTemplateIncludeStaticMigrations = FALSE;
+		if (is_array($this->configuration['TypoScript']['Template']['IncludeStatic'])) {
+			foreach ($this->configuration['TypoScript']['Template']['IncludeStatic'] as $includeStaticPath => $configuration) {
+				if (
+					!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))
+					|| $this->hasMigration(Migration::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC, $this->getPackageVersion(), $includeStaticPath)
+				) {
+					continue;
+				}
+				$hasNotAppliedTemplateIncludeStaticMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedTemplateIncludeStaticMigrations;
+	}
+
+	/**
+	 * @return bool
+	 * @todo: refactor, same conditions are used in migrate function
+	 */
+	protected function hasNotAppliedDatabaseMigrations() {
+		$databaseMigrationsPath = $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_DATABASE);
+		$hasNotAppliedDatabaseMigrations = FALSE;
+		if (is_dir($databaseMigrationsPath) && isset($this->configuration['Database'])) {
+			foreach ($this->configuration['Database'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $databaseMigrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'sql'
+					|| $this->hasMigration(Migration::TYPE_DATABASE, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+				$hasNotAppliedDatabaseMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedDatabaseMigrations;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function hasNotAppliedExtensionConfigurationMigration() {
+		if (
+			is_file($this->getAbsoluteExtensionConfigurationFilePathAndName())
+			&& !$this->hasMigration(Migration::TYPE_EXTCONF, $this->getPackageVersion(), $this->getExtensionConfigurationFileName())
+		) {
+			$hasNotAppliedMigration = TRUE;
+		} else {
+			$hasNotAppliedMigration = FALSE;
+		}
+		return $hasNotAppliedMigration;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getExtensionConfigurationFileName() {
+		return 'ExtensionConfiguration.php';
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getAbsoluteExtensionConfigurationFilePathAndName() {
+		return $this->getAbsoluteMigrationScriptPathByType(Migration::TYPE_EXTCONF) . DIRECTORY_SEPARATOR . $this->getExtensionConfigurationFileName();
 	}
 }
