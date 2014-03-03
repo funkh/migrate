@@ -131,7 +131,8 @@ class MigrationService {
 					'pages',
 					'uid = ' . (int) $configuration['pageUid'],
 					array(
-						'TSconfig' => $ts
+						'TSconfig' => $ts,
+						'tstamp' => time()
 					)
 				);
 				if (
@@ -178,7 +179,8 @@ class MigrationService {
 					'sys_template',
 					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'constants' => $ts
+						'constants' => $ts,
+						'tstamp' => time()
 					)
 				);
 				if (
@@ -225,7 +227,8 @@ class MigrationService {
 					'sys_template',
 					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'config' => $ts
+						'config' => $ts,
+						'tstamp' => time()
 					)
 				);
 				if (
@@ -434,10 +437,9 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 * @return boolean
 	 */
-	public function hasPackageMigrations(\TYPO3\Flow\Package\PackageInterface $package) {
+	public function hasPackageMigrations() {
 		$hasPackageMigrations =
 			$this->hasNotAppliedPageTsConfigMigrations()
 			|| $this->hasNotAppliedTemplateConstantsTsMigrations()
@@ -480,8 +482,8 @@ class MigrationService {
 				) {
 					continue;
 				}
+				$hasNotAppliedPageTsConfigMigrations = TRUE;
 			}
-			$hasNotAppliedPageTsConfigMigrations = TRUE;
 		}
 		return $hasNotAppliedPageTsConfigMigrations;
 	}
