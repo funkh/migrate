@@ -1,3 +1,3 @@
 # CLI Context
 
-'./typo3/cli_dispatch.phpsh migrate'
+´./typo3/cli_dispatch.phpsh migrate´
