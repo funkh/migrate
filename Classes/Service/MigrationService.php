@@ -319,23 +319,39 @@ class MigrationService {
 				}
 
 				// @todo: validate sql
-				$sql = file_get_contents($migrationPathAndFileName);
-				if (strlen($sql) === 0) {
+				$sqlStatements = $this->getSqlStatements(file_get_contents($migrationPathAndFileName));
+				if (count($sqlStatements) === 0) {
 					continue;
 				}
 
-				$res = $this->getDatabaseConnection()->sql_query($sql);
-				if ($res !== FALSE && $this->getDatabaseConnection()->sql_errno() === 0) {
+				$sqlErrors = 0;
+				foreach ($sqlStatements as $statement) {
+					$res = $this->getDatabaseConnection()->sql_query($statement);
+					if ($res === FALSE || $this->getDatabaseConnection()->sql_errno() !== 0) {
+						$sqlErrors++;
+					}
+				}
+
+				if ($sqlErrors === 0) {
 					$this->addMigration(
 						Migration::TYPE_DATABASE,
 						$this->getPackageVersion(),
 						$migrationFileName,
-						$sql
+						implode(CRLF, $sqlStatements)
 					);
 				}
 
 			}
 		}
+	}
+
+	/**
+	 * @param $sql
+	 * @return array
+	 */
+	protected function getSqlStatements($sql) {
+		$sqlSchemaMigrationService = new \TYPO3\CMS\Install\Service\SqlSchemaMigrationService();
+		return $sqlSchemaMigrationService->getStatementArray($sql, TRUE);
 	}
 
 	/**
