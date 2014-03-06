@@ -473,15 +473,21 @@ class MigrationService {
 	 *
 	 */
 	protected function getPackageVersion() {
+		$packageKey = $this->package->getPackageKey();
 		/** @var \Enet\Composer\Typo3\Cms\Package\ComposerAdaptedPackageManager $packageManager */
 		$packageManager = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->getEarlyInstance('TYPO3\\Flow\\Package\\PackageManager');
-		$composerName = $packageManager->getComposerNameFromPackageKey($this->package->getPackageKey());
-		$canonicalPackages = $packageManager->getComposer()->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-		foreach ($canonicalPackages as $package) {
-			if ($package->getName() === $composerName) {
-				return $package->getVersion();
+		$composerName = $packageManager->getComposerNameFromPackageKey($packageKey);
+
+		if ($composerName != '') {
+			$canonicalPackages = $packageManager->getComposer()->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+			foreach ($canonicalPackages as $package) {
+				if ($package->getName() === $composerName) {
+					return $package->getVersion();
+				}
 			}
 		}
+
+		return $this->package->getPackageMetaData()->getVersion();
 	}
 
 	/**
