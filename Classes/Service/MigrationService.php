@@ -421,6 +421,9 @@ class MigrationService {
 	 *
 	 */
 	protected function sortDatabaseMigrationsByPriority() {
+		if (!is_array($this->configuration['Database'])) {
+			return;
+		}
 		$priority = array();
 		foreach ($this->configuration['Database'] as $configuration) {
 			$priority[] = (int) $configuration['priority'];
