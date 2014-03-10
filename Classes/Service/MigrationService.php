@@ -126,15 +126,36 @@ class MigrationService {
 					continue;
 				}
 
-				// @todo implement append / overwrite mode
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
-					array(
-						'TSconfig' => $ts,
-						'tstamp' => time()
-					)
-				);
+				if($configuration['mode'] !== "overwrite") {
+					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+						'TSconfig',
+						'pages',
+						'uid = ' . (int) $configuration['pageUid']
+					);
+					if (is_null($row)) {
+						continue;
+					}
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'pages',
+						'uid = ' . (int) $configuration['pageUid'],
+						array(
+							'TSconfig' => $row['TSconfig'] . PHP_EOL .  $ts,
+							'tstamp' => time()
+						)
+					);
+				}
+
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'pages',
+						'uid = ' . (int) $configuration['pageUid'],
+						array(
+							'TSconfig' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}
+
 				if (
 					$res !== FALSE
 					&& $this->getDatabaseConnection()->sql_errno() === 0
@@ -174,15 +195,36 @@ class MigrationService {
 					continue;
 				}
 
-				// @todo implement append / overwrite mode
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'sys_template',
-					'uid = ' . (int) $configuration['templateUid'],
-					array(
-						'constants' => $ts,
-						'tstamp' => time()
-					)
-				);
+
+				if($configuration['mode'] !== "overwrite") {
+					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+						'constants',
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid']
+					);
+					if (is_null($row)) {
+						continue;
+					}
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'constants' => $row['constants'] . PHP_EOL .  $ts,
+							'tstamp' => time()
+						)
+					);
+				}
+
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'constants' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}
 				if (
 					$res !== FALSE
 					&& $this->getDatabaseConnection()->sql_errno() === 0
@@ -208,7 +250,6 @@ class MigrationService {
 		if (is_dir($migrationsPath) && isset($this->configuration['TypoScript']['Template']['Setup'])) {
 			foreach ($this->configuration['TypoScript']['Template']['Setup'] as $migrationFileName => $configuration) {
 				$migrationPathAndFileName = $migrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
-
 				if (
 					!is_file($migrationPathAndFileName)
 					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'ts'
@@ -222,15 +263,36 @@ class MigrationService {
 					continue;
 				}
 
-				// @todo implement append / overwrite mode
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'sys_template',
-					'uid = ' . (int) $configuration['templateUid'],
-					array(
-						'config' => $ts,
-						'tstamp' => time()
-					)
-				);
+				if($configuration['mode'] !== "overwrite") {
+					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+						'config',
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid']
+					);
+					if (is_null($row)) {
+						continue;
+					}
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'config' => $row['config'] . PHP_EOL .  $ts,
+							'tstamp' => time()
+						)
+					);
+				}
+
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'config' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}
+
 				if (
 					$res !== FALSE
 					&& $this->getDatabaseConnection()->sql_errno() === 0
