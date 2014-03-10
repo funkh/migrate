@@ -126,7 +126,16 @@ class MigrationService {
 					continue;
 				}
 
-				if($configuration['mode'] !== "overwrite") {
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'pages',
+						'uid = ' . (int) $configuration['pageUid'],
+						array(
+							'TSconfig' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'TSconfig',
 						'pages',
@@ -140,17 +149,6 @@ class MigrationService {
 						'uid = ' . (int) $configuration['pageUid'],
 						array(
 							'TSconfig' => $row['TSconfig'] . PHP_EOL .  $ts,
-							'tstamp' => time()
-						)
-					);
-				}
-
-				if($configuration['mode'] === "overwrite") {
-					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-						'pages',
-						'uid = ' . (int) $configuration['pageUid'],
-						array(
-							'TSconfig' => $ts,
 							'tstamp' => time()
 						)
 					);
@@ -195,8 +193,16 @@ class MigrationService {
 					continue;
 				}
 
-
-				if($configuration['mode'] !== "overwrite") {
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'constants' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'constants',
 						'sys_template',
@@ -215,16 +221,7 @@ class MigrationService {
 					);
 				}
 
-				if($configuration['mode'] === "overwrite") {
-					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-						'sys_template',
-						'uid = ' . (int) $configuration['templateUid'],
-						array(
-							'constants' => $ts,
-							'tstamp' => time()
-						)
-					);
-				}
+
 				if (
 					$res !== FALSE
 					&& $this->getDatabaseConnection()->sql_errno() === 0
@@ -263,7 +260,16 @@ class MigrationService {
 					continue;
 				}
 
-				if($configuration['mode'] !== "overwrite") {
+				if($configuration['mode'] === "overwrite") {
+					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+						'sys_template',
+						'uid = ' . (int) $configuration['templateUid'],
+						array(
+							'config' => $ts,
+							'tstamp' => time()
+						)
+					);
+				}else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'config',
 						'sys_template',
@@ -277,17 +283,6 @@ class MigrationService {
 						'uid = ' . (int) $configuration['templateUid'],
 						array(
 							'config' => $row['config'] . PHP_EOL .  $ts,
-							'tstamp' => time()
-						)
-					);
-				}
-
-				if($configuration['mode'] === "overwrite") {
-					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-						'sys_template',
-						'uid = ' . (int) $configuration['templateUid'],
-						array(
-							'config' => $ts,
 							'tstamp' => time()
 						)
 					);
