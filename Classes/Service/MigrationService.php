@@ -126,7 +126,7 @@ class MigrationService {
 					continue;
 				}
 
-				if($configuration['mode'] === "overwrite") {
+				if($configuration['mode'] === 'overwrite') {
 					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
 						'pages',
 						'uid = ' . (int) $configuration['pageUid'],
@@ -135,7 +135,7 @@ class MigrationService {
 							'tstamp' => time()
 						)
 					);
-				}else {
+				} else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'TSconfig',
 						'pages',
@@ -193,7 +193,7 @@ class MigrationService {
 					continue;
 				}
 
-				if($configuration['mode'] === "overwrite") {
+				if ($configuration['mode'] === 'overwrite') {
 					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
 						'sys_template',
 						'uid = ' . (int) $configuration['templateUid'],
@@ -202,7 +202,7 @@ class MigrationService {
 							'tstamp' => time()
 						)
 					);
-				}else {
+				} else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'constants',
 						'sys_template',
@@ -260,7 +260,7 @@ class MigrationService {
 					continue;
 				}
 
-				if($configuration['mode'] === "overwrite") {
+				if ($configuration['mode'] === 'overwrite') {
 					$res = $this->getDatabaseConnection()->exec_UPDATEquery(
 						'sys_template',
 						'uid = ' . (int) $configuration['templateUid'],
@@ -269,7 +269,7 @@ class MigrationService {
 							'tstamp' => time()
 						)
 					);
-				}else {
+				} else {
 					$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 						'config',
 						'sys_template',
@@ -498,7 +498,7 @@ class MigrationService {
 			return;
 		}
 		$priority = array();
-		foreach ($this->configuration['Database'] as $configuration) {
+		foreach ($this->configuration['Database'] as $cogetAbsoluteMigrationScriptPathByTypenfiguration) {
 			$priority[] = (int) $configuration['priority'];
 		}
 		array_multisort($priority, SORT_ASC, $this->configuration['Database']);
