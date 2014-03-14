@@ -15,7 +15,6 @@ if (TYPO3_MODE === 'BE') {
 		'',						// Position
 		array(
 			'Migration' => 'list',
-			
 		),
 		array(
 			'access' => 'user,group',

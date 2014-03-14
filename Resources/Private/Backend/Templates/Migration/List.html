@@ -17,31 +17,27 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:flashMessages />
 
-<table  class="tx_migrate" >
-	<tr>
-		<th><f:translate key="tx_migrate_domain_model_migration.type" /></th>
-		<th><f:translate key="tx_migrate_domain_model_migration.version" /></th>
-		<th><f:translate key="tx_migrate_domain_model_migration.extension_key" /></th>
-		<th><f:translate key="tx_migrate_domain_model_migration.script_path" /></th>
-		<th><f:translate key="tx_migrate_domain_model_migration.query" /></th>
-		<th><f:translate key="tx_migrate_domain_model_migration.applied" /></th>
-		<th> </th>
-		<th> </th>
-	</tr>
-
-	<f:for each="{migrations}" as="migration">
+<table class="tx_migrate" >
+	<thead>
 		<tr>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.type}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.version}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.extensionKey}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.scriptPath}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.query}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{migration : migration}"> {migration.applied}</f:link.action></td>
-			<td><f:link.action action="edit" arguments="{migration : migration}">Edit</f:link.action></td>
-			<td><f:link.action action="delete" arguments="{migration : migration}">Delete</f:link.action></td>
+			<th><f:translate key="tx_migrate_domain_model_migration.type" /></th>
+			<th><f:translate key="tx_migrate_domain_model_migration.version" /></th>
+			<th><f:translate key="tx_migrate_domain_model_migration.extension_key" /></th>
+			<th><f:translate key="tx_migrate_domain_model_migration.script_path" /></th>
+			<th><f:translate key="tx_migrate_domain_model_migration.applied" /></th>
 		</tr>
-	</f:for>
-</table>
+	</thead>
 
-<f:link.action action="new">New Migration</f:link.action>
+	<tbody>
+		<f:for each="{migrations}" as="migration">
+			<tr>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.type}</f:link.action></td>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.version}</f:link.action></td>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.extensionKey}</f:link.action></td>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.scriptPath}</f:link.action></td>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.applied}</f:link.action></td>
+			</tr>
+		</f:for>
+	</tbody>
+</table>
 </f:section>

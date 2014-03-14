@@ -47,7 +47,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function listAction() {
-		
 		$migrations = $this->migrationRepository->findAll();
 		$this->view->assign('migrations', $migrations);
 	}
@@ -59,7 +58,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function showAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		
 		$this->view->assign('migration', $migration);
 	}
 
@@ -71,7 +69,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function newAction(\Enet\Migrate\Domain\Model\Migration $newMigration = NULL) {
-		
 		$this->view->assign('newMigration', $newMigration);
 	}
 
@@ -82,7 +79,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function createAction(\Enet\Migrate\Domain\Model\Migration $newMigration) {
-		
 		$this->migrationRepository->add($newMigration);
 		$this->flashMessageContainer->add('Your new Migration was created.');
 		$this->redirect('list');
@@ -95,7 +91,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function editAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		
 		$this->view->assign('migration', $migration);
 	}
 
@@ -106,7 +101,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function updateAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		
 		$this->migrationRepository->update($migration);
 		$this->flashMessageContainer->add('Your Migration was updated.');
 		$this->redirect('list');
@@ -119,7 +113,6 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function deleteAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		
 		$this->migrationRepository->remove($migration);
 		$this->flashMessageContainer->add('Your Migration was removed.');
 		$this->redirect('list');
