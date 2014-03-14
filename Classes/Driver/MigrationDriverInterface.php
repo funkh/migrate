@@ -28,4 +28,26 @@ namespace Enet\Migrate\Driver;
 
 interface MigrationDriverInterface {
 
+	const BASE_PATH = 'Migration';
+	const TYPE_UNDEFINED = 0;
+	const TYPE_EXTCONF = 1;
+	const TYPE_DATABASE = 2;
+	#const TYPE_TYPOSCRIPT = 3;
+	const TYPE_TYPOSCRIPT_PAGE_TSCONFIG = 4;
+	const TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS = 5;
+	const TYPE_TYPOSCRIPT_TEMPLATE_SETUP = 6;
+	const TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC = 7;
+
+	/**
+	 * @return boolean
+	 */
+	public function migrate($package);
+
+	/**
+	 * @return boolean
+	 */
+	public function hasNotAppliedMigrations();
 }
+
+
+

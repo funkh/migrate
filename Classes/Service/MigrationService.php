@@ -88,12 +88,24 @@ class MigrationService {
 		$migrationErrors = 0;
 
 		$this->output->write('Migrating ' . $this->package->getPackageKey() . '... ');
-		$this->migrateExtensionConfiguration();
-		$this->migrateDatabase();
-		$this->migratePageTsConfig();
-		$this->migrateTemplateConstantsTs();
-		$this->migrateTemplateSetupTs();
-		$this->migrateTemplateIncludeStatic();
+		$extensionConfiguration = new \Enet\Migrate\Driver\ExtensionConfigurationMigrationDriver();
+		$extensionConfiguration->migrate($this->package);
+		$database = new \Enet\Migrate\Driver\DatabaseMigrationDriver();
+		$database->migrate($this->package);
+		$pageTsConfig = new \Enet\Migrate\Driver\PageTsConfigMigrationDriver();
+		$pageTsConfig->migrate($this->package);
+		$setupTypoScript = new \Enet\Migrate\Driver\SetupTypoScriptMigrationDriver();
+		$setupTypoScript->migrate($this->package);
+		$templateIncludeStatic = new \Enet\Migrate\Driver\TemplateIncludeStaticMigrationDriver();
+		$templateIncludeStatic->migrate($this->package);
+		$templateConstantsTyposcript = new \Enet\Migrate\Driver\TemplateIncludeStaticMigrationDriver();
+		$templateConstantsTyposcript->migrate($this->package);
+		//$this->migrateExtensionConfiguration();
+		//$this->migrateDatabase();
+		//$this->migratePageTsConfig();
+		//$this->migrateTemplateConstantsTs();
+		//$this->migrateTemplateSetupTs();
+		//$this->migrateTemplateIncludeStatic();
 
 		if ($migrationErrors > 0) {
 			$this->output->write('<error>Failed</error>', TRUE);

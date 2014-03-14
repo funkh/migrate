@@ -25,7 +25,92 @@
 
 namespace Enet\Migrate\Driver;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 class TemplateIncludeStaticMigrationDriver extends AbstractSystemTemplateMigrationDriver {
 
+	/**
+	 * @var \TYPO3\Flow\Package\PackageInterface
+	 */
+	protected $package;
+
+	/**
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	public function migrate($package) {
+		$this->package = $package;
+		$yamlConfigurationFile = $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . '/Migrations.yaml';
+		if (is_file($yamlConfigurationFile)) {
+			$this->configuration = \Symfony\Component\Yaml\Yaml::parse($yamlConfigurationFile);
+			$this->sortDatabaseMigrationsByPriority();
+		}
+		// @todo make migrate function more generic
+		if (is_array($this->configuration['TypoScript']['Template']['IncludeStatic'])) {
+			foreach ($this->configuration['TypoScript']['Template']['IncludeStatic'] as $includeStaticPath => $configuration) {
+
+				if (
+					!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))
+					|| $this->hasMigration(MigrationDriverInterface::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC, $this->getPackageVersion(), $includeStaticPath)
+				) {
+					continue;
+				}
+
+				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+					'include_static_file',
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid']
+				);
+				if (is_null($row)) {
+					continue;
+				}
+
+				// @todo: integrate ordering!?
+				$includeStaticFiles = GeneralUtility::trimExplode(',', $row['include_static_file'], TRUE);
+				if (!in_array($includeStaticPath, $includeStaticFiles)) {
+					$includeStaticFiles[] = $includeStaticPath;
+				}
+
+				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid'],
+					array(
+						'include_static_file' => implode(',', $includeStaticFiles),
+						'tstamp' => time()
+					)
+				);
+				if (
+					$res !== FALSE
+					&& $this->getDatabaseConnection()->sql_errno() === 0
+					&& $this->getDatabaseConnection()->sql_affected_rows() === 1
+				) {
+					$this->addMigration(
+						MigrationDriverInterface::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC,
+						$this->getPackageVersion(),
+						$includeStaticPath,
+						var_export($configuration, TRUE)
+					);
+				}
+			}
+		}
+	}
+
+	public function hasNotAppliedMigrations() {
+		$hasNotAppliedTemplateIncludeStaticMigrations = FALSE;
+		if (is_array($this->configuration['TypoScript']['Template']['IncludeStatic'])) {
+			foreach ($this->configuration['TypoScript']['Template']['IncludeStatic'] as $includeStaticPath => $configuration) {
+				if (
+					!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))
+					|| $this->hasMigration(MigrationDriverInterface::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC, $this->getPackageVersion(), $includeStaticPath)
+				) {
+					continue;
+				}
+				$hasNotAppliedTemplateIncludeStaticMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedTemplateIncludeStaticMigrations;
+
+}
 }

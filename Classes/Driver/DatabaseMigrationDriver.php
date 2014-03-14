@@ -28,4 +28,87 @@ namespace Enet\Migrate\Driver;
 
 class DatabaseMigrationDriver extends AbstractMigrationDriver {
 
+	/**
+	 * @var \TYPO3\Flow\Package\PackageInterface
+	 */
+	protected $package;
+
+	/**
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	public function migrate($package) {
+		$this->package = $package;
+		$yamlConfigurationFile = $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . '/Migrations.yaml';
+		if (is_file($yamlConfigurationFile)) {
+			$this->configuration = \Symfony\Component\Yaml\Yaml::parse($yamlConfigurationFile);
+			$this->sortDatabaseMigrationsByPriority();
+		}
+		$databaseMigrationsPath = $this->getAbsoluteMigrationScriptPathByType(MigrationDriverInterface::TYPE_DATABASE);
+		if (is_dir($databaseMigrationsPath) && isset($this->configuration['Database'])) {
+			foreach ($this->configuration['Database'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $databaseMigrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'sql'
+					|| $this->hasMigration(MigrationDriverInterface::TYPE_DATABASE, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+
+				// @todo: validate sql
+				$sqlStatements = $this->getSqlStatements(file_get_contents($migrationPathAndFileName));
+				if (count($sqlStatements) === 0) {
+					continue;
+				}
+
+				$sqlErrors = 0;
+				foreach ($sqlStatements as $statement) {
+					$res = $this->getDatabaseConnection()->sql_query($statement);
+					if ($res === FALSE || $this->getDatabaseConnection()->sql_errno() !== 0) {
+						$sqlErrors++;
+					}
+				}
+
+				if ($sqlErrors === 0) {
+					$this->addMigration(
+						MigrationDriverInterface::TYPE_DATABASE,
+						$this->getPackageVersion(),
+						$migrationFileName,
+						implode(CRLF, $sqlStatements)
+					);
+				}
+
+			}
+		}
+	}
+
+	public function hasNotAppliedMigrations() {
+		$databaseMigrationsPath = $this->getAbsoluteMigrationScriptPathByType(MigrationDriverInterface::TYPE_DATABASE);
+		$hasNotAppliedDatabaseMigrations = FALSE;
+		if (is_dir($databaseMigrationsPath) && isset($this->configuration['Database'])) {
+			foreach ($this->configuration['Database'] as $migrationFileName => $configuration) {
+				$migrationPathAndFileName = $databaseMigrationsPath . DIRECTORY_SEPARATOR . $migrationFileName;
+				if (
+					!is_file($migrationPathAndFileName)
+					|| pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION) !== 'sql'
+					|| $this->hasMigration(MigrationDriverInterface::TYPE_DATABASE, $this->getPackageVersion(), $migrationFileName)
+				) {
+					continue;
+				}
+				$hasNotAppliedDatabaseMigrations = TRUE;
+			}
+		}
+		return $hasNotAppliedDatabaseMigrations;
+	}
+
+	/**
+	 * @param $sql
+	 * @return array
+	 */
+	protected function getSqlStatements($sql) {
+		$sqlSchemaMigrationService = new \TYPO3\CMS\Install\Service\SqlSchemaMigrationService();
+		return $sqlSchemaMigrationService->getStatementArray($sql, TRUE);
+	}
 }
