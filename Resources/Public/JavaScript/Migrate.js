@@ -1,10 +1,6 @@
 Migrate = {
-
-
 	initializeDataTables: function() {
-		console.log('initializeDataTables');
 		jQuery('.tx_migrate').dataTable();
-
 	}
 };
 
