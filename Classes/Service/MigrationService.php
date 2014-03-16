@@ -76,10 +76,10 @@ class MigrationService {
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 */
 	protected function migratePackage(\TYPO3\Flow\Package\PackageInterface $package) {
-		/** @var $driverRegistry \Enet\Migrate\Driver\MigrationDriverRegistry */
-		$driverRegistry = $this->objectManager->get('Enet\Migrate\Driver\MigrationDriverRegistry');
+		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
+		$driverRegistry = $this->objectManager->get('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
 		foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
-			/** @var \Enet\Migrate\Driver\MigrationDriverInterface $driver */
+			/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */
 			$driver = $this->objectManager->get($driverClassName, $package);
 			if ($driver->hasNotAppliedMigrations()) {
 				$this->output->write('Migrating ' . $package->getPackageKey() . '... ');

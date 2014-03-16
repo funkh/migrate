@@ -1,5 +1,5 @@
 <?php
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\MigrationDriver;
 
 /***************************************************************
 *  Copyright notice
@@ -66,7 +66,7 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 			throw new \InvalidArgumentException('Class ' . $className . ' does not exist.', 1394973615);
 		}
 
-		if (!in_array('Enet\Migrate\Driver\MigrationDriverInterface', class_implements($className), TRUE)) {
+		if (!in_array('Enet\Migrate\MigrationDriver\MigrationDriverInterface', class_implements($className), TRUE)) {
 			throw new \InvalidArgumentException('Driver ' . $className . ' needs to implement the MigrationDriverInterface.', 1394973621);
 		}
 		if ($shortName === '') {

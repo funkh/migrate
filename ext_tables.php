@@ -30,8 +30,8 @@ if (TYPO3_MODE === 'BE') {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_migrate_domain_model_migration', 'EXT:migrate/Resources/Private/Language/locallang_csh_tx_migrate_domain_model_migration.xlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_migrate_domain_model_migration');
 
-/** @var \Enet\Migrate\Driver\MigrationDriverRegistry $registry */
-$registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Enet\Migrate\Driver\MigrationDriverRegistry');
+/** @var \Enet\Migrate\MigrationDriver\MigrationDriverRegistry $registry */
+$registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
 $registry->addDriversToTCA();
 
 ?>

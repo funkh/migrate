@@ -23,27 +23,30 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\MigrationDriver\Driver;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Enet\Migrate\MigrationDriver\AbstractConfigurationMigrationDriver;
 
-class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
+class ExtensionConfigurationMigrationDriver extends AbstractConfigurationMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/PageTsConfig';
+		return 'Configuration/ExtensionConfiguration';
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getConfigurationFileExtensions() {
-		return array('ts', 'txt');
+		return array('php');
 	}
 
 	/**
-	 * @return bool|void
+	 * @return bool
+	 * @throws \RuntimeException
 	 */
 	public function migrate() {
 		if (!$this->hasNotAppliedMigrations()) {
@@ -51,54 +54,25 @@ class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
 		}
 
 		foreach ($this->configuration as $migrationFileName => $configuration) {
-			$migrationPathAndFileName = $this->getAbsoluteConfigurationPath() . $migrationFileName;
-			$typoScript = file_get_contents($migrationPathAndFileName);
-			if (strlen($typoScript) === 0) {
-				continue;
+			$extensionConfiguration = include $this->getAbsoluteConfigurationPath() . $migrationFileName;
+			if (!is_array($extensionConfiguration)) {
+				throw new \RuntimeException('Extension configuration must be a serializable array.', 1394982162);
 			}
-
-			if($configuration['mode'] === 'overwrite') {
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
-					array(
-						'TSconfig' => $typoScript,
-						'tstamp' => time()
-					)
-				);
-			} else {
-				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'TSconfig',
-					'pages',
-					'uid = ' . (int) $configuration['pageUid']
-				);
-				if (is_null($row)) {
-					continue;
-				}
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
-					array(
-						'TSconfig' => $row['TSconfig'] . PHP_EOL .  $typoScript,
-						'tstamp' => time()
-					)
-				);
-			}
-
-			if (
-				$res !== FALSE
-				&& $this->getDatabaseConnection()->sql_errno() === 0
-				&& $this->getDatabaseConnection()->sql_affected_rows() === 1
-			) {
+			$serializedExtensionConfiguration = serialize($extensionConfiguration);
+			$result = $this->configurationManager->setLocalConfigurationValueByPath(
+				'EXT/extConf/' . $configuration['extensionKey'],
+				$serializedExtensionConfiguration
+			);
+			if ($result === TRUE) {
 				$this->addMigration(
 					$this->getPackageVersion(),
 					$this->getRelativeConfigurationPath() . $migrationFileName,
-					$typoScript
+					$serializedExtensionConfiguration
 				);
+			} else {
+				// @todo: implement some type of logging
 			}
 		}
-
 		return TRUE;
 	}
-
 }

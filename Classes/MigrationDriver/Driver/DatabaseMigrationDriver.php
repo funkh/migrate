@@ -23,27 +23,32 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver\SysTemplate;
+namespace Enet\Migrate\MigrationDriver\Driver;
 
-/**
- * Class TypoScriptConstantsMigrationDriver
- *
- * @package Enet\Migrate\Driver\SysTemplate
- */
-class TypoScriptConstantsMigrationDriver extends \Enet\Migrate\Driver\AbstractSysTemplateMigrationDriver {
+use Enet\Migrate\MigrationDriver\AbstractMigrationDriver;
+
+class DatabaseMigrationDriver extends AbstractMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/Template/Constants';
+		return 'Database';
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getConfigurationFileExtensions() {
-		return array('ts', 'txt');
+		return array('sql');
+	}
+
+	/**
+	 *
+	 */
+	protected function setConfiguration() {
+		parent::setConfiguration();
+		$this->sortDatabaseMigrationsByPriority();
 	}
 
 	/**
@@ -56,48 +61,26 @@ class TypoScriptConstantsMigrationDriver extends \Enet\Migrate\Driver\AbstractSy
 
 		foreach ($this->configuration as $migrationFileName => $configuration) {
 			$migrationPathAndFileName = $this->getAbsoluteConfigurationPath() . $migrationFileName;
-			$typoScript = file_get_contents($migrationPathAndFileName);
-			if (strlen($typoScript) === 0) {
+
+			// @todo: validate sql
+			$sqlStatements = $this->getSqlStatements(file_get_contents($migrationPathAndFileName));
+			if (count($sqlStatements) === 0) {
 				continue;
 			}
 
-			if ($configuration['mode'] === 'overwrite') {
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'sys_template',
-					'uid = ' . (int) $configuration['templateUid'],
-					array(
-						'constants' => $typoScript,
-						'tstamp' => time()
-					)
-				);
-			} else {
-				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'constants',
-					'sys_template',
-					'uid = ' . (int) $configuration['templateUid']
-				);
-				if (is_null($row)) {
-					continue;
+			$sqlErrors = 0;
+			foreach ($sqlStatements as $statement) {
+				$res = $this->getDatabaseConnection()->sql_query($statement);
+				if ($res === FALSE || $this->getDatabaseConnection()->sql_errno() !== 0) {
+					$sqlErrors++;
 				}
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'sys_template',
-					'uid = ' . (int) $configuration['templateUid'],
-					array(
-						'constants' => $row['constants'] . PHP_EOL .  $typoScript,
-						'tstamp' => time()
-					)
-				);
 			}
 
-			if (
-				$res !== FALSE
-				&& $this->getDatabaseConnection()->sql_errno() === 0
-				&& $this->getDatabaseConnection()->sql_affected_rows() === 1
-			) {
+			if ($sqlErrors === 0) {
 				$this->addMigration(
 					$this->getPackageVersion(),
 					$this->getRelativeConfigurationPath() . $migrationFileName,
-					$typoScript
+					implode(CRLF, $sqlStatements)
 				);
 			}
 		}
@@ -105,4 +88,26 @@ class TypoScriptConstantsMigrationDriver extends \Enet\Migrate\Driver\AbstractSy
 		return TRUE;
 	}
 
+	/**
+	 * @param $sql
+	 * @return array
+	 */
+	protected function getSqlStatements($sql) {
+		$sqlSchemaMigrationService = new \TYPO3\CMS\Install\Service\SqlSchemaMigrationService();
+		return $sqlSchemaMigrationService->getStatementArray($sql, TRUE);
+	}
+
+	/**
+	 *
+	 */
+	protected function sortDatabaseMigrationsByPriority() {
+		if (!is_array($this->configuration['Database'])) {
+			return;
+		}
+		$priority = array();
+		foreach ($this->configuration['Database'] as $configuration) {
+			$priority[] = (int) $configuration['priority'];
+		}
+		array_multisort($priority, SORT_ASC, $this->configuration['Database']);
+	}
 }

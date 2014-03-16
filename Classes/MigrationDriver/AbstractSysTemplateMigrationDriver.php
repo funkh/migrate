@@ -23,7 +23,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\MigrationDriver;
 
 /**
  * Class AbstractSysTemplateMigrationDriver

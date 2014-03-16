@@ -1,5 +1,5 @@
 <?php
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\MigrationDriver;
 
 /***************************************************************
 *  Copyright notice

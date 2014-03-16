@@ -23,10 +23,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\MigrationDriver;
 
 use Enet\Migrate\Domain\Model\Migration;
-use Enet\Migrate\Driver\Exception\InvalidDriverConfigurationException;
+use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
