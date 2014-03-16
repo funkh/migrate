@@ -35,6 +35,7 @@ class MigrationService {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+	 * @inject
 	 */
 	protected $objectManager;
 
@@ -76,20 +77,37 @@ class MigrationService {
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 */
 	protected function migratePackage(\TYPO3\Flow\Package\PackageInterface $package) {
+		if (!$this->hasPackageNotAppliedMigrations($package)) {
+			return;
+		}
+		$this->output->writeln('<info>Migrating ' . $package->getPackageKey() . '...</info>');
 		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
 		$driverRegistry = $this->objectManager->get('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
 		foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
 			/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */
 			$driver = $this->objectManager->get($driverClassName, $package);
 			if ($driver->hasNotAppliedMigrations()) {
-				$this->output->write('Migrating ' . $package->getPackageKey() . '... ');
-				if ($driver->migrate()) {
-					$this->output->write('<info>OK</info>', TRUE);
-				} else {
-					$this->output->write('<error>Failed</error>', TRUE);
-				}
+				$driver->migrate();
 			}
 		}
+	}
+
+	/**
+	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @return bool
+	 */
+	public function hasPackageNotAppliedMigrations(\TYPO3\Flow\Package\PackageInterface $package) {
+		$hasPackageNotAppliedMigrations = FALSE;
+		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
+		$driverRegistry = $this->objectManager->get('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
+		foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
+			/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */
+			$driver = $this->objectManager->get($driverClassName, $package);
+			if ($driver->hasNotAppliedMigrations()) {
+				return TRUE;
+			}
+		}
+		return $hasPackageNotAppliedMigrations;
 	}
 
 }

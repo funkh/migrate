@@ -27,6 +27,7 @@ namespace Enet\Migrate\MigrationDriver;
 
 use Enet\Migrate\Domain\Model\Migration;
 use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
@@ -53,6 +54,12 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	protected $configuration = array();
 
 	/**
+	 * @var \Symfony\Component\Console\Output\ConsoleOutput
+	 * @inject
+	 */
+	protected $output;
+
+	/**
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 */
 	public function __construct(\TYPO3\Flow\Package\PackageInterface $package) {
@@ -64,6 +71,8 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	 */
 	public function initializeObject() {
 		$this->setConfiguration();
+		// @todo: make verbosity configureable
+		$this->output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 	}
 
 	/**
@@ -97,7 +106,14 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	 * @param string $rawData
 	 * @return bool|\mysqli_result|object
 	 */
-	public function addMigration($version = '', $script = '', $rawData = '') {
+	public function addMigration($version = '000', $script = '', $rawData = '') {
+
+		if ($this->output->isDebug()) {
+			$this->output->write('<info>Driver:</info>  ' . get_class($this), TRUE);
+			$this->output->write('<info>Script:</info>  ' . $script, TRUE);
+			$this->output->write('<info>Version:</info> ' . $version, TRUE);
+		}
+
 		$res = $this->getDatabaseConnection()->exec_INSERTquery(
 			'tx_migrate_domain_model_migration',
 			array(
@@ -105,7 +121,7 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 				'crdate' => time(),
 				'tstamp' => time(),
 				'driver' => get_class($this),
-				'version' => '000',
+				'version' => $version,
 				'extension_key' => $this->package->getPackageKey(),
 				'script_path' => $script,
 				'applied' => TRUE,
