@@ -25,15 +25,16 @@
 
 namespace Enet\Migrate\MigrationDriver\Driver\SysTemplate;
 
+use Enet\Migrate\MigrationDriver\AbstractConfigurationMigrationDriver;
+use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Enet\Migrate\MigrationDriver\AbstractSysTemplateMigrationDriver;
 
 /**
  * Class IncludeStaticMigrationDriver
  *
  * @package Enet\Migrate\Driver\SysTemplate
  */
-class IncludeStaticMigrationDriver extends AbstractSysTemplateMigrationDriver {
+class IncludeStaticMigrationDriver extends AbstractConfigurationMigrationDriver {
 
 	/**
 	 * @return string
@@ -43,10 +44,18 @@ class IncludeStaticMigrationDriver extends AbstractSysTemplateMigrationDriver {
 	}
 
 	/**
-	 * @return array
+	 * @param array $configuration
+	 * @throws InvalidDriverConfigurationException
 	 */
-	public function getConfigurationFileExtensions() {
-		return array('ts', 'txt');
+	protected function validateConfiguration(array $configuration) {
+		foreach ($this->configuration as $includeStaticPath => $configuration) {
+			if (!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))) {
+				throw new InvalidDriverConfigurationException(
+					'Static file does not exist.',
+					1395003755
+				);
+			}
+		}
 	}
 
 	/**
@@ -58,10 +67,6 @@ class IncludeStaticMigrationDriver extends AbstractSysTemplateMigrationDriver {
 		}
 
 		foreach ($this->configuration as $includeStaticPath => $configuration) {
-			if (!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))) {
-				continue;
-			}
-
 			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
 				'include_static_file',
 				'sys_template',
@@ -85,6 +90,7 @@ class IncludeStaticMigrationDriver extends AbstractSysTemplateMigrationDriver {
 					'tstamp' => time()
 				)
 			);
+
 			if (
 				$res !== FALSE
 				&& $this->getDatabaseConnection()->sql_errno() === 0

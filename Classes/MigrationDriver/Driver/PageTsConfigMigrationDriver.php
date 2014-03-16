@@ -25,14 +25,14 @@
 
 namespace Enet\Migrate\MigrationDriver\Driver;
 
-use Enet\Migrate\MigrationDriver\AbstractMigrationDriver;
+use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
 
 /**
  * Class PageTsConfigMigrationDriver
  *
  * @package Enet\Migrate\MigrationDriver\Driver
  */
-class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
+class PageTsConfigMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string

@@ -25,14 +25,14 @@
 
 namespace Enet\Migrate\MigrationDriver\Driver\SysTemplate;
 
-use Enet\Migrate\MigrationDriver\AbstractSysTemplateMigrationDriver;
+use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
 
 /**
  * Class TypoScriptSetupMigrationDriver
  *
  * @package Enet\Migrate\Driver\SysTemplate
  */
-class TypoScriptSetupMigrationDriver extends AbstractSysTemplateMigrationDriver {
+class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string

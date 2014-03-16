@@ -42,11 +42,6 @@ interface MigrationDriverInterface {
 	public function getConfigurationPath();
 
 	/**
-	 * @return array
-	 */
-	public function getConfigurationFileExtensions();
-
-	/**
 	 * @return boolean
 	 */
 	public function migrate();

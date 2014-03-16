@@ -78,21 +78,18 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 					throw new InvalidDriverConfigurationException('Configuration path ' . $this->getConfigurationPath() . ' does not exist.', 1394985553);
 				}
 				$this->configuration = ArrayUtility::getValueByPath($configuration, $this->getConfigurationPath());
-				foreach ($this->configuration as $migrationFileName => $configuration) {
-					$migrationPathAndFileName = $this->getAbsoluteConfigurationPath() . $migrationFileName;
-					if (!is_file($migrationPathAndFileName)) {
-						throw new InvalidDriverConfigurationException('Configuration file ' . $migrationPathAndFileName . ' does not exist.', 1394985553);
-					}
-					$migrationFileExtension = pathinfo($migrationPathAndFileName, PATHINFO_EXTENSION);
-					if (!in_array($migrationFileExtension, $this->getConfigurationFileExtensions())) {
-						throw new InvalidDriverConfigurationException('Not allowed configuration file extension for this driver.', 1394985565);
-					}
-				}
+				$this->validateConfiguration($this->configuration);
 			} catch (InvalidDriverConfigurationException $e) {
 				$this->configuration = array();
 			}
 		}
 	}
+
+	/**
+	 * @param array $configuration
+	 * @throws Exception\InvalidDriverConfigurationException
+	 */
+	abstract protected function validateConfiguration(array $configuration);
 
 	/**
 	 * @param string $version
@@ -152,14 +149,9 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	}
 
 	/**
-	 * @param integer $type
 	 * @return string
+	 * @deprecated
 	 */
-	protected function getAbsoluteMigrationScriptPathByType($type) {
-		return $this->package->getPackagePath() . Migration::getMigrationScriptPathByType($type);
-	}
-
-
 	protected function getPackageVersion() {
 		$packageKey = $this->package->getPackageKey();
 		/** @var \Enet\Composer\Typo3\Cms\Package\ComposerAdaptedPackageManager $packageManager */
@@ -178,30 +170,4 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 		return $this->package->getPackageMetaData()->getVersion();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasNotAppliedMigrations() {
-		$notAppliedMigrationsCount = 0;
-		foreach ($this->configuration as $migrationFileName => $configuration) {
-			if (!$this->hasMigration($this->getRelativeConfigurationPath() . $migrationFileName)) {
-				$notAppliedMigrationsCount++;
-			}
-		}
-		return $notAppliedMigrationsCount > 0;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAbsoluteConfigurationPath() {
-		return $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRelativeConfigurationPath() {
-		return MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
-	}
 }

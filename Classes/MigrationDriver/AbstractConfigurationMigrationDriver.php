@@ -24,6 +24,8 @@ namespace Enet\Migrate\MigrationDriver;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+
 /**
  * Class AbstractConfigurationMigrationDriver
  *
@@ -32,9 +34,16 @@ namespace Enet\Migrate\MigrationDriver;
 abstract class AbstractConfigurationMigrationDriver extends AbstractMigrationDriver {
 
 	/**
-	 * @var \TYPO3\CMS\Core\Configuration\ConfigurationManager
-	 * @inject
+	 * @return bool
 	 */
-	protected $configurationManager;
+	public function hasNotAppliedMigrations() {
+		$notAppliedMigrationsCount = 0;
+		foreach ($this->configuration as $migrationKey => $configuration) {
+			if (!$this->hasMigration($migrationKey)) {
+				$notAppliedMigrationsCount++;
+			}
+		}
+		return $notAppliedMigrationsCount > 0;
+	}
 
 }

@@ -25,9 +25,9 @@
 
 namespace Enet\Migrate\MigrationDriver\Driver;
 
-use Enet\Migrate\MigrationDriver\AbstractMigrationDriver;
+use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
 
-class DatabaseMigrationDriver extends AbstractMigrationDriver {
+class DatabaseMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string

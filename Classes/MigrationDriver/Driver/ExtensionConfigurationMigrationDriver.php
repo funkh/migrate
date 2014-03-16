@@ -26,9 +26,15 @@
 namespace Enet\Migrate\MigrationDriver\Driver;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Enet\Migrate\MigrationDriver\AbstractConfigurationMigrationDriver;
+use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
 
-class ExtensionConfigurationMigrationDriver extends AbstractConfigurationMigrationDriver {
+class ExtensionConfigurationMigrationDriver extends AbstractFileMigrationDriver {
+
+	/**
+	 * @var \TYPO3\CMS\Core\Configuration\ConfigurationManager
+	 * @inject
+	 */
+	protected $configurationManager;
 
 	/**
 	 * @return string
