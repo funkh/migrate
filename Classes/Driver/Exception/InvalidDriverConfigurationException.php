@@ -1,8 +1,10 @@
 <?php
+namespace Enet\Migrate\Driver\Exception;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2014 Jens Petersen <jens.petersen@e-net.info>, e-net Consulting GmbH & Co. KG
+ *  (c) 2014 Helge Funk <helge.funk@e-net.info>, e-net Consulting GmbH & Co. KG
  *
  *  All rights reserved
  *
@@ -23,39 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+/**
+ *
+ */
+class InvalidDriverConfigurationException extends \Exception {
 
-
-interface MigrationDriverInterface {
-
-	const BASE_PATH = 'Migration';
-	const VERSION_SCHEME_PATTERN = '[0-9]{3}';
-
-	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
-	 */
-	public function __construct(\TYPO3\Flow\Package\PackageInterface $package);
-
-	/**
-	 * @return string
-	 */
-	public function getConfigurationPath();
-
-	/**
-	 * @return array
-	 */
-	public function getConfigurationFileExtensions();
-
-	/**
-	 * @return boolean
-	 */
-	public function migrate();
-
-	/**
-	 * @return boolean
-	 */
-	public function hasNotAppliedMigrations();
 }
-
-
-

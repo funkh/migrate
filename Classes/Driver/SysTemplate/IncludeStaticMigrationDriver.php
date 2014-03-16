@@ -23,16 +23,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\Driver\SysTemplate;
 
+use Enet\Migrate\Driver\MigrationDriverInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
+/**
+ * Class IncludeStaticMigrationDriver
+ *
+ * @package Enet\Migrate\Driver\SysTemplate
+ */
+class IncludeStaticMigrationDriver extends \Enet\Migrate\Driver\AbstractSysTemplateMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/PageTsConfig';
+		return 'TypoScript/Template/IncludeStatic';
 	}
 
 	/**
@@ -43,48 +50,41 @@ class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
 	}
 
 	/**
-	 * @return bool|void
+	 * @return bool
 	 */
 	public function migrate() {
 		if (!$this->hasNotAppliedMigrations()) {
 			return TRUE;
 		}
 
-		foreach ($this->configuration as $migrationFileName => $configuration) {
-			$migrationPathAndFileName = $this->getAbsoluteConfigurationPath() . $migrationFileName;
-			$typoScript = file_get_contents($migrationPathAndFileName);
-			if (strlen($typoScript) === 0) {
+		foreach ($this->configuration as $includeStaticPath => $configuration) {
+			if (!is_dir(GeneralUtility::getFileAbsFileName($includeStaticPath))) {
 				continue;
 			}
 
-			if($configuration['mode'] === 'overwrite') {
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
-					array(
-						'TSconfig' => $typoScript,
-						'tstamp' => time()
-					)
-				);
-			} else {
-				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'TSconfig',
-					'pages',
-					'uid = ' . (int) $configuration['pageUid']
-				);
-				if (is_null($row)) {
-					continue;
-				}
-				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
-					array(
-						'TSconfig' => $row['TSconfig'] . PHP_EOL .  $typoScript,
-						'tstamp' => time()
-					)
-				);
+			$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+				'include_static_file',
+				'sys_template',
+				'uid = ' . (int) $configuration['templateUid']
+			);
+			if (is_null($row)) {
+				continue;
 			}
 
+			// @todo: integrate ordering!?
+			$includeStaticFiles = GeneralUtility::trimExplode(',', $row['include_static_file'], TRUE);
+			if (!in_array($includeStaticPath, $includeStaticFiles)) {
+				$includeStaticFiles[] = $includeStaticPath;
+			}
+
+			$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+				'sys_template',
+				'uid = ' . (int) $configuration['templateUid'],
+				array(
+					'include_static_file' => implode(',', $includeStaticFiles),
+					'tstamp' => time()
+				)
+			);
 			if (
 				$res !== FALSE
 				&& $this->getDatabaseConnection()->sql_errno() === 0
@@ -92,8 +92,8 @@ class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
 			) {
 				$this->addMigration(
 					$this->getPackageVersion(),
-					$this->getRelativeConfigurationPath() . $migrationFileName,
-					$typoScript
+					$includeStaticPath,
+					var_export($configuration, TRUE)
 				);
 			}
 		}

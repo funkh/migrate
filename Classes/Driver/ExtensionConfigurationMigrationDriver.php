@@ -25,69 +25,53 @@
 
 namespace Enet\Migrate\Driver;
 
-use Enet\Migrate\Domain\Model\Migration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ExtensionConfigurationMigrationDriver extends AbstractMigrationDriver{
-
-	/**
-	 * @var \TYPO3\Flow\Package\PackageInterface
-	 */
-	protected $package;
-
-	/**
-	 * @var \TYPO3\CMS\Core\Configuration\ConfigurationManager
-	 */
-	protected $configurationManager;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-	 */
-	protected $objectManager;
-
-	public function migrate($package) {
-		$this->package = $package;
-		$this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-		$this->configurationManager = $this->objectManager->get('TYPO3\CMS\Core\Configuration\ConfigurationManager');
-		if (!$this->hasNotAppliedMigrations()) {
-			return;
-		}
-		$extensionConfiguration = include $this->getAbsoluteExtensionConfigurationFilePathAndName();
-		if (is_array($extensionConfiguration) && !$this->dryRun) {
-			$this->configurationManager->setLocalConfigurationValueByPath(
-				'EXT/extConf/' . $this->package->getPackageKey(),
-				serialize($extensionConfiguration)
-			);
-			$this->addMigration(
-				Migration::TYPE_EXTCONF,
-				$this->getPackageVersion(),
-				$this->getExtensionConfigurationFileName(),
-				serialize($extensionConfiguration)
-			);
-		}
-	}
-
-	public function hasNotAppliedMigrations() {
-		if (
-			is_file($this->getAbsoluteExtensionConfigurationFilePathAndName())
-			&& !$this->hasMigration(Migration::TYPE_EXTCONF, $this->getPackageVersion(), $this->getExtensionConfigurationFileName())
-		) {
-			$hasNotAppliedMigration = TRUE;
-		} else {
-			$hasNotAppliedMigration = FALSE;
-		}
-		return $hasNotAppliedMigration;
-	}
-
-	protected function getAbsoluteExtensionConfigurationFilePathAndName() {
-		return $this->getAbsoluteMigrationScriptPathByType(MigrationDriverInterface::TYPE_EXTCONF) . DIRECTORY_SEPARATOR . $this->getExtensionConfigurationFileName();
-	}
+class ExtensionConfigurationMigrationDriver extends AbstractConfigurationMigrationDriver {
 
 	/**
 	 * @return string
 	 */
-	protected function getExtensionConfigurationFileName() {
-		return 'ExtensionConfiguration.php';
+	public function getConfigurationPath() {
+		return 'Configuration/ExtensionConfiguration';
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getConfigurationFileExtensions() {
+		return array('php');
+	}
+
+	/**
+	 * @return bool
+	 * @throws \RuntimeException
+	 */
+	public function migrate() {
+		if (!$this->hasNotAppliedMigrations()) {
+			return TRUE;
+		}
+
+		foreach ($this->configuration as $migrationFileName => $configuration) {
+			$extensionConfiguration = include $this->getAbsoluteConfigurationPath() . $migrationFileName;
+			if (!is_array($extensionConfiguration)) {
+				throw new \RuntimeException('Extension configuration must be a serializable array.', 1394982162);
+			}
+			$serializedExtensionConfiguration = serialize($extensionConfiguration);
+			$result = $this->configurationManager->setLocalConfigurationValueByPath(
+				'EXT/extConf/' . $configuration['extensionKey'],
+				$serializedExtensionConfiguration
+			);
+			if ($result === TRUE) {
+				$this->addMigration(
+					$this->getPackageVersion(),
+					$this->getRelativeConfigurationPath() . $migrationFileName,
+					$serializedExtensionConfiguration
+				);
+			} else {
+				// @todo: implement some type of logging
+			}
+		}
+		return TRUE;
+	}
 }

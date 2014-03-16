@@ -25,8 +25,12 @@
 
 namespace Enet\Migrate\Driver;
 
-
-abstract class AbstractSystemTemplateMigrationDriver extends AbstractMigrationDriver {
+/**
+ * Class AbstractSysTemplateMigrationDriver
+ *
+ * @package Enet\Migrate\Driver
+ */
+abstract class AbstractSysTemplateMigrationDriver extends AbstractMigrationDriver {
 
 
 

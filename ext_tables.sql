@@ -7,6 +7,7 @@ CREATE TABLE tx_migrate_domain_model_migration (
 	pid int(11) DEFAULT '0' NOT NULL,
 
 	type int(11) DEFAULT '0' NOT NULL,
+	driver varchar(255) DEFAULT '' NOT NULL,
 	version varchar(255) DEFAULT '' NOT NULL,
 	extension_key varchar(255) DEFAULT '' NOT NULL,
 	script_path varchar(255) DEFAULT '' NOT NULL,

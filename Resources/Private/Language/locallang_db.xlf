@@ -10,6 +10,10 @@
 			<trans-unit id="tx_migrate_domain_model_migration.type">
 				<source>Type</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.driver">
+				<source>Driver</source>
+			</trans-unit>
+
 
 			<trans-unit id="tx_migrate_domain_model_migration.type.undefined">
 				<source>undefined</source>

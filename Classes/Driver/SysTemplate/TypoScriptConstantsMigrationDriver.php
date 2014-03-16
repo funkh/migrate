@@ -23,16 +23,20 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\Driver;
+namespace Enet\Migrate\Driver\SysTemplate;
 
-
-class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
+/**
+ * Class TypoScriptConstantsMigrationDriver
+ *
+ * @package Enet\Migrate\Driver\SysTemplate
+ */
+class TypoScriptConstantsMigrationDriver extends \Enet\Migrate\Driver\AbstractSysTemplateMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/PageTsConfig';
+		return 'TypoScript/Template/Constants';
 	}
 
 	/**
@@ -57,29 +61,29 @@ class PageTsConfigMigrationDriver extends AbstractMigrationDriver {
 				continue;
 			}
 
-			if($configuration['mode'] === 'overwrite') {
+			if ($configuration['mode'] === 'overwrite') {
 				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'TSconfig' => $typoScript,
+						'constants' => $typoScript,
 						'tstamp' => time()
 					)
 				);
 			} else {
 				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'TSconfig',
-					'pages',
-					'uid = ' . (int) $configuration['pageUid']
+					'constants',
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid']
 				);
 				if (is_null($row)) {
 					continue;
 				}
 				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'TSconfig' => $row['TSconfig'] . PHP_EOL .  $typoScript,
+						'constants' => $row['constants'] . PHP_EOL .  $typoScript,
 						'tstamp' => time()
 					)
 				);

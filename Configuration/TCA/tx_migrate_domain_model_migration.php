@@ -3,13 +3,41 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$TCA['tx_migrate_domain_model_migration'] = array(
-	'ctrl' => $TCA['tx_migrate_domain_model_migration']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title'	=> 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration',
+		'label' => 'driver',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'dividers2tabs' => TRUE,
+
+		'versioningWS' => 2,
+		'versioning_followPages' => TRUE,
+
+		'origUid' => 't3_origuid',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l10n_parent',
+		'transOrigDiffSourceField' => 'l10n_diffsource',
+
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+		),
+		'type' => 'type',
+		#'readOnly' => 1,// Prevents the table from being altered
+		'adminOnly' => 1, // Only admin, if any
+		'rootLevel' => 1,
+		'searchFields' => 'type,version,extension_key,script_path,query,applied,',
+		'iconfile' => 'LLL:EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
+	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, version, extension_key, script_path, query, applied',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, driver, version, extension_key, script_path, query, applied',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, version, extension_key, script_path, query, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, driver, version, extension_key, script_path, query, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -116,6 +144,18 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 				'eval' => ''
 			),
 		),
+		'driver' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.driver',
+			'config' => array(
+				'type' => 'select',
+				'items' => array(
+				),
+				'size' => 1,
+				'maxitems' => 1,
+				'eval' => ''
+			),
+		),
 		'version' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.version',
@@ -139,7 +179,7 @@ $TCA['tx_migrate_domain_model_migration'] = array(
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.script_path',
 			'config' => array(
 				'type' => 'input',
-				'size' => 30,
+				'size' => 100,
 				'eval' => 'trim'
 			),
 		),
