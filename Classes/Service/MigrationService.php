@@ -101,6 +101,7 @@ class MigrationService {
 		if (!$this->hasPackageNotAppliedMigrations($package)) {
 			return;
 		}
+		$this->output->writeln('');
 		$this->output->writeln('<info>Migrating ' . $package->getPackageKey() . '...</info>');
 
 		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
@@ -109,7 +110,7 @@ class MigrationService {
 			if (!$this->hasPackageMigrationVersionNotAppliedMigrations($package, $migrationVersion)) {
 				continue;
 			}
-			$this->output->write('----------------------', TRUE);
+			$this->output->write('----------------------------------', TRUE);
 			$this->output->write('<info>Version:</info> ' . $migrationVersion, TRUE);
 			foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
 				/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */

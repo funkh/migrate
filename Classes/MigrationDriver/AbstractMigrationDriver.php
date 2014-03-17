@@ -79,7 +79,7 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	public function initializeObject() {
 		$this->setConfiguration();
 		// @todo: make verbosity configureable
-		$this->output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+		$this->output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 	}
 
 	/**
