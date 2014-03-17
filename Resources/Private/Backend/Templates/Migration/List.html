@@ -20,7 +20,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <table class="tx_migrate" >
 	<thead>
 		<tr>
-			<th><f:translate key="tx_migrate_domain_model_migration.type" /></th>
+			<th><f:translate key="tx_migrate_domain_model_migration.driver" /></th>
 			<th><f:translate key="tx_migrate_domain_model_migration.version" /></th>
 			<th><f:translate key="tx_migrate_domain_model_migration.extension_key" /></th>
 			<th><f:translate key="tx_migrate_domain_model_migration.script_path" /></th>
@@ -31,7 +31,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 	<tbody>
 		<f:for each="{migrations}" as="migration">
 			<tr>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.type}</f:link.action></td>
+				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.driver}</f:link.action></td>
 				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.version}</f:link.action></td>
 				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.extensionKey}</f:link.action></td>
 				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.scriptPath}</f:link.action></td>

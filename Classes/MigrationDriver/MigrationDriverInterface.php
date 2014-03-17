@@ -29,12 +29,13 @@ namespace Enet\Migrate\MigrationDriver;
 interface MigrationDriverInterface {
 
 	const BASE_PATH = 'Migration';
-	const VERSION_SCHEME_PATTERN = '[0-9]{3}';
+	const VERSION_SCHEME_PATTERN = '/[0-9]{3}/';
 
 	/**
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param integer $migrationVersion
 	 */
-	public function __construct(\TYPO3\Flow\Package\PackageInterface $package);
+	public function __construct(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion);
 
 	/**
 	 * @return string

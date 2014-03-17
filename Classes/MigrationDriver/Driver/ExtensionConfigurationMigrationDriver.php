@@ -71,8 +71,7 @@ class ExtensionConfigurationMigrationDriver extends AbstractFileMigrationDriver 
 			);
 			if ($result === TRUE) {
 				$this->addMigration(
-					$this->getPackageVersion(),
-					$this->getRelativeConfigurationPath() . $migrationFileName,
+					$migrationFileName,
 					$serializedExtensionConfiguration
 				);
 			} else {

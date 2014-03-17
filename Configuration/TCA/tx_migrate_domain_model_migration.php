@@ -34,10 +34,10 @@ return array(
 		'iconfile' => 'LLL:EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, driver, version, extension_key, script_path, query, applied',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, driver, version, extension_key, extension_version, script_path, identifier, raw_data, applied',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, driver, version, extension_key, script_path, query, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, driver, version, extension_key, extension_version, script_path, identifier, raw_data, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -124,26 +124,6 @@ return array(
 				),
 			),
 		),
-		'type' => array(
-			'exclude' => 0,
-			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type',
-			'config' => array(
-				'type' => 'select',
-				'items' => array(
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.undefined', \Enet\Migrate\Domain\Model\Migration::TYPE_UNDEFINED),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.extconf', \Enet\Migrate\Domain\Model\Migration::TYPE_EXTCONF),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.database', \Enet\Migrate\Domain\Model\Migration::TYPE_DATABASE),
-					#array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.page.tsConfig', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_PAGE_TSCONFIG),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.template.constants', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.template.setup', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_TEMPLATE_SETUP),
-					array('LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.type.typoscript.template.includeStatic', \Enet\Migrate\Domain\Model\Migration::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC),
-				),
-				'size' => 1,
-				'maxitems' => 1,
-				'eval' => ''
-			),
-		),
 		'driver' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.driver',
@@ -174,6 +154,15 @@ return array(
 				'eval' => 'trim'
 			),
 		),
+		'extension_version' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.extension_version',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'eval' => 'trim'
+			),
+		),
 		'script_path' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.script_path',
@@ -183,23 +172,12 @@ return array(
 				'eval' => 'trim'
 			),
 		),
-		'query' => array(
+		'identifier' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.query',
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.identifier',
 			'config' => array(
-				'type' => 'text',
-				'cols' => 40,
-				'rows' => 15,
-				'eval' => 'trim'
-			),
-		),
-		'configuration' => array(
-			'exclude' => 0,
-			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.configuration',
-			'config' => array(
-				'type' => 'text',
-				'cols' => 40,
-				'rows' => 15,
+				'type' => 'input',
+				'size' => 100,
 				'eval' => 'trim'
 			),
 		),

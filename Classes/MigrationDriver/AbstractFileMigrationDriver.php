@@ -61,7 +61,7 @@ abstract class AbstractFileMigrationDriver extends AbstractMigrationDriver {
 	public function hasNotAppliedMigrations() {
 		$notAppliedMigrationsCount = 0;
 		foreach ($this->configuration as $migrationFileName => $configuration) {
-			if (!$this->hasMigration($this->getRelativeConfigurationPath() . $migrationFileName)) {
+			if (!$this->hasMigration($migrationFileName)) {
 				$notAppliedMigrationsCount++;
 			}
 		}
@@ -72,13 +72,13 @@ abstract class AbstractFileMigrationDriver extends AbstractMigrationDriver {
 	 * @return string
 	 */
 	public function getAbsoluteConfigurationPath() {
-		return $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
+		return $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->migrationVersion . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getRelativeConfigurationPath() {
-		return MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
+		return MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->migrationVersion . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
 	}
 }

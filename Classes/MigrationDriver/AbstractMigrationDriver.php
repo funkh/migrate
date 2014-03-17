@@ -54,6 +54,11 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	protected $configuration = array();
 
 	/**
+	 * @param integer
+	 */
+	protected $migrationVersion;
+
+	/**
 	 * @var \Symfony\Component\Console\Output\ConsoleOutput
 	 * @inject
 	 */
@@ -61,9 +66,11 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 
 	/**
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param integer $migrationVersion
 	 */
-	public function __construct(\TYPO3\Flow\Package\PackageInterface $package) {
+	public function __construct(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion) {
 		$this->package = $package;
+		$this->migrationVersion = (int) $migrationVersion;
 	}
 
 	/**
@@ -79,9 +86,8 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	 * @throws \Exception
 	 */
 	protected function setConfiguration() {
-		$yamlConfigurationFile = $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . '/Migrations.yaml';
-		if (is_file($yamlConfigurationFile)) {
-			$configuration = \Symfony\Component\Yaml\Yaml::parse($yamlConfigurationFile);
+		if (is_file($this->getYamlConfigurationPathAndFileName())) {
+			$configuration = \Symfony\Component\Yaml\Yaml::parse($this->getYamlConfigurationPathAndFileName());
 			try {
 				if (!ArrayUtility::isValidPath($configuration, $this->getConfigurationPath())) {
 					throw new InvalidDriverConfigurationException('Configuration path ' . $this->getConfigurationPath() . ' does not exist.', 1394985553);
@@ -95,23 +101,28 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	}
 
 	/**
+	 * @return string
+	 */
+	protected function getYamlConfigurationPathAndFileName() {
+		return $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->migrationVersion . DIRECTORY_SEPARATOR . 'Migrations.yaml';
+	}
+
+	/**
 	 * @param array $configuration
 	 * @throws Exception\InvalidDriverConfigurationException
 	 */
 	abstract protected function validateConfiguration(array $configuration);
 
 	/**
-	 * @param string $version
 	 * @param string $script
 	 * @param string $rawData
 	 * @return bool|\mysqli_result|object
 	 */
-	public function addMigration($version = '000', $script = '', $rawData = '') {
+	public function addMigration($script = '', $rawData = '') {
 
 		if ($this->output->isDebug()) {
 			$this->output->write('<info>Driver:</info>  ' . get_class($this), TRUE);
 			$this->output->write('<info>Script:</info>  ' . $script, TRUE);
-			$this->output->write('<info>Version:</info> ' . $version, TRUE);
 		}
 
 		$res = $this->getDatabaseConnection()->exec_INSERTquery(
@@ -121,9 +132,10 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 				'crdate' => time(),
 				'tstamp' => time(),
 				'driver' => get_class($this),
-				'version' => $version,
+				'version' => (int) $this->migrationVersion,
 				'extension_key' => $this->package->getPackageKey(),
-				'script_path' => $script,
+				'extension_version' => $this->getPackageVersion(),
+				'script_path' => $this->getConfigurationPath() . DIRECTORY_SEPARATOR . $script,
 				'applied' => TRUE,
 				'raw_data' => $rawData,
 			)
@@ -140,8 +152,8 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 			return FALSE;
 		}
 		$where = 'driver = ' . $this->getDatabaseConnection()->fullQuoteStr(get_class($this), 'tx_migrate_domain_model_migration');
-		$where .= ' AND version = 000';
-		$where .= ' AND script_path = ' . $this->getDatabaseConnection()->fullQuoteStr($script, 'tx_migrate_domain_model_migration');
+		$where .= ' AND version = ' . (int) $this->migrationVersion;
+		$where .= ' AND script_path = ' . $this->getDatabaseConnection()->fullQuoteStr($this->getConfigurationPath() . DIRECTORY_SEPARATOR . $script, 'tx_migrate_domain_model_migration');
 		$where .= ' AND extension_key = ' . $this->getDatabaseConnection()->fullQuoteStr($this->package->getPackageKey(), 'tx_migrate_domain_model_migration');
 		$where .= ' AND applied = 1';
 		$where .= ' AND deleted = 0';

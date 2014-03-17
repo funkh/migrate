@@ -98,8 +98,7 @@ class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 				&& $this->getDatabaseConnection()->sql_affected_rows() === 1
 			) {
 				$this->addMigration(
-					$this->getPackageVersion(),
-					$this->getRelativeConfigurationPath() . $migrationFileName,
+					$migrationFileName,
 					$typoScript
 				);
 			}

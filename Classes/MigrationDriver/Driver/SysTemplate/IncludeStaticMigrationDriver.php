@@ -97,7 +97,6 @@ class IncludeStaticMigrationDriver extends AbstractConfigurationMigrationDriver 
 				&& $this->getDatabaseConnection()->sql_affected_rows() === 1
 			) {
 				$this->addMigration(
-					$this->getPackageVersion(),
 					$includeStaticPath,
 					var_export($configuration, TRUE)
 				);

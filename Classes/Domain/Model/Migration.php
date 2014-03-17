@@ -33,47 +33,11 @@ namespace Enet\Migrate\Domain\Model;
  */
 class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
-	const BASE_PATH = 'Migration';
-	const TYPE_UNDEFINED = 0;
-	const TYPE_EXTCONF = 1;
-	const TYPE_DATABASE = 2;
-	#const TYPE_TYPOSCRIPT = 3;
-	const TYPE_TYPOSCRIPT_PAGE_TSCONFIG = 4;
-	const TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS = 5;
-	const TYPE_TYPOSCRIPT_TEMPLATE_SETUP = 6;
-	const TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC = 7;
-
 	/**
-	 * @var array
+	 * driver
+	 * @var string
 	 */
-	protected static $migrationPaths = array(
-		self::TYPE_EXTCONF => 'Migration',
-		self::TYPE_DATABASE => 'Migration/Database',
-		#self::TYPE_TYPOSCRIPT => 'Migration/TypoScript',
-		self::TYPE_TYPOSCRIPT_PAGE_TSCONFIG => 'Migration/TypoScript/PageTsConfig',
-		self::TYPE_TYPOSCRIPT_TEMPLATE_CONSTANTS => 'Migration/TypoScript/Template/Constants',
-		self::TYPE_TYPOSCRIPT_TEMPLATE_SETUP => 'Migration/TypoScript/Template/Setup',
-		#self::TYPE_TYPOSCRIPT_TEMPLATE_INCLUDE_STATIC => 'Migration/TypoScript/Template/IncludeStatic',
-	);
-
-	/**
-	 * @param $type
-	 * @return mixed
-	 */
-	public static function getMigrationScriptPathByType($type) {
-		if (isset(self::$migrationPaths[$type])) {
-			return self::$migrationPaths[$type];
-		} else {
-			// @todo: throw exception
-		}
-	}
-
-	/**
-	 * type
-	 *
-	 * @var integer
-	 */
-	protected $type = 0;
+	protected $driver;
 
 	/**
 	 * version
@@ -90,6 +54,12 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $extensionKey = '';
 
 	/**
+	 * extensionVersion
+	 * @var string
+	 */
+	protected $extensionVersion;
+
+	/**
 	 * scriptPath
 	 *
 	 * @var string
@@ -97,18 +67,10 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $scriptPath = '';
 
 	/**
-	 * query
-	 *
+	 * identifier
 	 * @var string
 	 */
-	protected $query = '';
-
-	/**
-	 * configuration
-	 *
-	 * @var string
-	 */
-	protected $configuration = '';
+	protected $identifier;
 
 	/**
 	 * rawData
@@ -125,24 +87,22 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $applied = FALSE;
 
 	/**
-	 * Returns the type
+	 * Getter for driver
 	 *
-	 * @return integer $type
+	 * @return string driver
 	 */
-	public function getType() {
-
-		return $this->type;
+	public function getDriver() {
+		return $this->driver;
 	}
 
 	/**
-	 * Sets the type
+	 * Setter for driver
 	 *
-	 * @param integer $type
+	 * @param string $driver
 	 * @return void
 	 */
-	public function setType($type) {
-
-		$this->type = $type;
+	public function setDriver($driver) {
+		$this->driver = $driver;
 	}
 
 	/**
@@ -188,6 +148,25 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * Getter for extensionVersion
+	 *
+	 * @return string extensionVersion
+	 */
+	public function getExtensionVersion() {
+		return $this->extensionVersion;
+	}
+
+	/**
+	 * Setter for extensionVersion
+	 *
+	 * @param string $extensionVersion
+	 * @return void
+	 */
+	public function setExtensionVersion($extensionVersion) {
+		$this->extensionVersion = $extensionVersion;
+	}
+
+	/**
 	 * Returns the scriptPath
 	 *
 	 * @return string $scriptPath
@@ -209,43 +188,22 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the query
+	 * Getter for identifier
 	 *
-	 * @return string $query
+	 * @return string identifier
 	 */
-	public function getQuery() {
-
-		return $this->query;
+	public function getIdentifier() {
+		return $this->identifier;
 	}
 
 	/**
-	 * Sets the query
+	 * Setter for identifier
 	 *
-	 * @param string $query
+	 * @param string $identifier
 	 * @return void
 	 */
-	public function setQuery($query) {
-
-		$this->query = $query;
-	}
-
-	/**
-	 * Getter for configuration
-	 *
-	 * @return string configuration
-	 */
-	public function getConfiguration() {
-		return $this->configuration;
-	}
-
-	/**
-	 * Setter for configuration
-	 *
-	 * @param string $configuration
-	 * @return void
-	 */
-	public function setConfiguration($configuration) {
-		$this->configuration = $configuration;
+	public function setIdentifier($identifier) {
+		$this->identifier = $identifier;
 	}
 
 	/**

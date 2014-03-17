@@ -78,8 +78,7 @@ class DatabaseMigrationDriver extends AbstractFileMigrationDriver {
 
 			if ($sqlErrors === 0) {
 				$this->addMigration(
-					$this->getPackageVersion(),
-					$this->getRelativeConfigurationPath() . $migrationFileName,
+					$migrationFileName,
 					implode(CRLF, $sqlStatements)
 				);
 			}

@@ -7,53 +7,23 @@
 			<trans-unit id="tx_migrate_domain_model_migration">
 				<source>Migration</source>
 			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type">
-				<source>Type</source>
-			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.driver">
 				<source>Driver</source>
 			</trans-unit>
-
-
-			<trans-unit id="tx_migrate_domain_model_migration.type.undefined">
-				<source>undefined</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.extconf">
-				<source>extconf</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.database">
-				<source>database</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript">
-				<source>typoscript</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.page.tsConfig">
-				<source>typoscript.page.tsConfig</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.template.constants">
-				<source>typoscript.template.constants</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.template.setup">
-				<source>typoscript.template.setup</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type.typoscript.template.includeStatic">
-				<source>typoscript.template.includeStatic</source>
-			</trans-unit>
-
 			<trans-unit id="tx_migrate_domain_model_migration.version">
 				<source>Version</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.extension_key">
 				<source>Extension Key</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.extension_version">
+				<source>Extension Version</source>
+			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.script_path">
 				<source>Script Path</source>
 			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.query">
-				<source>Query</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.configuration">
-				<source>Configuration</source>
+			<trans-unit id="tx_migrate_domain_model_migration.identifier">
+				<source>Identifier</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.raw_data">
 				<source>Raw data</source>
