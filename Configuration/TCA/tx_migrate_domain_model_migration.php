@@ -31,7 +31,7 @@ return array(
 		'adminOnly' => 1, // Only admin, if any
 		'rootLevel' => 1,
 		'searchFields' => 'type,version,extension_key,script_path,query,applied,',
-		'iconfile' => 'LLL:EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
+		'iconfile' => 'EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
 	),
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, driver, version, extension_key, extension_version, script_path, identifier, raw_data, applied',
