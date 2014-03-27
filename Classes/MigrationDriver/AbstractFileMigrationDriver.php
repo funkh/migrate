@@ -25,6 +25,8 @@
 namespace Enet\Migrate\MigrationDriver;
 
 use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\Flow\Utility\Files;
 
 /**
  * Class AbstractSysTemplateMigrationDriver
@@ -66,13 +68,6 @@ abstract class AbstractFileMigrationDriver extends AbstractMigrationDriver {
 			}
 		}
 		return $notAppliedMigrationsCount > 0;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAbsoluteConfigurationPath() {
-		return $this->package->getPackagePath() . MigrationDriverInterface::BASE_PATH . DIRECTORY_SEPARATOR . $this->migrationVersion . DIRECTORY_SEPARATOR . $this->getConfigurationPath() . DIRECTORY_SEPARATOR;
 	}
 
 	/**

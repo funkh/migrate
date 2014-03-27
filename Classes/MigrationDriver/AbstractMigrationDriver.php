@@ -25,11 +25,12 @@
 
 namespace Enet\Migrate\MigrationDriver;
 
-use Enet\BaseFeFoundation\Exception;
-use Enet\Migrate\Domain\Model\Migration;
 use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\Flow\Utility\Files;
 
 /**
  * Class AbstractMigrationDriver
@@ -224,6 +225,19 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 		}
 
 		return $packageVersion;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAbsoluteConfigurationPath() {
+		$absoluteConfigurationBasePath = Files::concatenatePaths(array(
+			$this->package->getPackagePath(),
+			MigrationDriverInterface::BASE_PATH,
+			$this->migrationVersion,
+			$this->getConfigurationPath()
+		));
+		return PathUtility::sanitizeTrailingSeparator($absoluteConfigurationBasePath);
 	}
 
 }
