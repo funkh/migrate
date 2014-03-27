@@ -36,5 +36,10 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['IncludeS
 	'shortName' => 'IncludeStatic',
 	'label' => 'SysTemplate\IncludeStatic'
 );
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Fal'] = array(
+	'class' => 'Enet\Migrate\MigrationDriver\Driver\FalMigrationDriver',
+	'shortName' => 'Fal',
+	'label' => 'Fal'
+);
 
 ?>
