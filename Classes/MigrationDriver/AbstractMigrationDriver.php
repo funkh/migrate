@@ -25,6 +25,7 @@
 
 namespace Enet\Migrate\MigrationDriver;
 
+use Enet\BaseFeFoundation\Exception;
 use Enet\Migrate\Domain\Model\Migration;
 use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -177,25 +178,52 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	}
 
 	/**
-	 * @return string
-	 * @deprecated
+	 * @return null|string
+	 * @throws \Exception
 	 */
 	protected function getPackageVersion() {
-		$packageKey = $this->package->getPackageKey();
 		/** @var \Enet\Composer\Typo3\Cms\Package\ComposerAdaptedPackageManager $packageManager */
 		$packageManager = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->getEarlyInstance('TYPO3\\Flow\\Package\\PackageManager');
-		$composerName = $packageManager->getComposerNameFromPackageKey($packageKey);
+		$packageKey = $this->package->getPackageKey();
+		$packageVersion = NULL;
 
-		if ($composerName != '') {
-			$canonicalPackages = $packageManager->getComposer()->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-			foreach ($canonicalPackages as $package) {
-				if ($package->getName() === $composerName) {
-					return $package->getVersion();
+		if ($packageManager instanceof \Enet\Composer\Typo3\Cms\Package\ComposerAdaptedPackageManager) {
+			$composerName = $packageManager->getComposerNameFromPackageKey($packageKey);
+			if ($composerName != '') {
+				$canonicalPackages = $packageManager->getComposer()->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+				foreach ($canonicalPackages as $package) {
+					if ($package->getName() === $composerName) {
+						$packageVersion = $package->getVersion();
+						break;
+					}
 				}
 			}
 		}
 
-		return $this->package->getPackageMetaData()->getVersion();
+		if (is_null($packageVersion) || strlen($packageVersion) === 0) {
+			if (is_null($this->package->getPackageMetaData()->getVersion())) {
+				$_EXTKEY = $this->package->getPackageKey();
+				$extensionManagerConfigurationFilePath = $this->package->getPackagePath() . 'ext_emconf.php';
+				$EM_CONF = NULL;
+				if (@file_exists($extensionManagerConfigurationFilePath)) {
+					include $extensionManagerConfigurationFilePath;
+					if (is_array($EM_CONF[$_EXTKEY]) && isset($EM_CONF[$_EXTKEY]['version'])) {
+						$packageVersion = $EM_CONF[$_EXTKEY]['version'];
+					}
+				}
+			} else {
+				$packageVersion = $this->package->getPackageMetaData()->getVersion();
+			}
+		}
+
+		if (is_null($packageVersion)) {
+			throw new \Exception(
+				'Could not determine package version of package: ' . $this->package->getPackageKey(),
+				1395908221
+			);
+		}
+
+		return $packageVersion;
 	}
 
 }
