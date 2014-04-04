@@ -9,37 +9,41 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers'] = array()
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['ExtensionConfiguration'] = array(
 	'class' => 'Enet\Migrate\Driver\ExtensionConfigurationMigrationDriver',
 	'shortName' => 'ExtensionConfiguration',
-	'label' => 'ExtensionConfiguration'
-);
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Database'] = array(
-	'class' => 'Enet\Migrate\Driver\DatabaseMigrationDriver',
-	'shortName' => 'Database',
-	'label' => 'Database'
+	'label' => 'ExtensionConfiguration',
+	'dataFileExtensions' => array('php'),
 );
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['PageTsConfig'] = array(
 	'class' => 'Enet\Migrate\Driver\PageTsConfigMigrationDriver',
 	'shortName' => 'PageTsConfig',
-	'label' => 'PageTsConfig'
+	'label' => 'PageTsConfig',
+	'dataFileExtensions' => array('txt', 'ts'),
 );
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['TypoScriptConstants'] = array(
-	'class' => 'Enet\Migrate\Driver\SysTemplate\TypoScriptConstantsMigrationDriver',
-	'shortName' => 'TypoScriptConstants',
-	'label' => 'SysTemplate\TypoScriptConstants'
-);
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['TypoScriptSetup'] = array(
-	'class' => 'Enet\Migrate\Driver\SysTemplate\TypoScriptSetupMigrationDriver',
-	'shortName' => 'TypoScriptSetup',
-	'label' => 'SysTemplate\TypoScriptSetup'
-);
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['IncludeStatic'] = array(
-	'class' => 'Enet\Migrate\Driver\SysTemplate\IncludeStaticMigrationDriver',
-	'shortName' => 'IncludeStatic',
-	'label' => 'SysTemplate\IncludeStatic'
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['SysTemplate'] = array(
+	'class' => 'Enet\Migrate\Driver\SysTemplateMigrationDriver',
+	'shortName' => 'SysTemplate',
+	'label' => 'SysTemplate'
 );
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Fal'] = array(
 	'class' => 'Enet\Migrate\Driver\FalMigrationDriver',
 	'shortName' => 'Fal',
 	'label' => 'Fal'
+);
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['T3d'] = array(
+	'class' => 'Enet\Migrate\Driver\T3dMigrationDriver',
+	'shortName' => 'T3d',
+	'label' => 'T3d',
+	'dataFileExtensions' => array('t3d')
+);
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Record'] = array(
+	'class' => 'Enet\Migrate\Driver\RecordMigrationDriver',
+	'shortName' => 'Record',
+	'label' => 'Record'
+);
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Sql'] = array(
+	'class' => 'Enet\Migrate\Driver\SqlMigrationDriver',
+	'shortName' => 'Sql',
+	'label' => 'Sql',
+	'dataFileExtensions' => array('sql'),
 );
 
 ?>

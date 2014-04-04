@@ -7,6 +7,9 @@
 			<trans-unit id="tx_migrate_domain_model_migration">
 				<source>Migration</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.uuid">
+				<source>UUID</source>
+			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.driver">
 				<source>Driver</source>
 			</trans-unit>
@@ -28,8 +31,20 @@
 			<trans-unit id="tx_migrate_domain_model_migration.configuration">
 				<source>Configuration</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.configuration_hash">
+				<source>Configuration hash</source>
+			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.raw_data">
 				<source>Data</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.data">
+				<source>Data</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.data_file">
+				<source>Data file</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.data_hash">
+				<source>Data hash</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.applied">
 				<source>Applied</source>

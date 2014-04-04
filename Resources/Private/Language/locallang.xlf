@@ -7,6 +7,12 @@
 			<trans-unit id="tx_migrate_domain_model_migration">
 				<source>Migration</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.uuid">
+				<source>UUID</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.driver">
+				<source>driver</source>
+			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.type">
 				<source>type</source>
 			</trans-unit>
@@ -25,7 +31,7 @@
 			<trans-unit id="tx_migrate_domain_model_migration.applied">
 				<source>applied</source>
 			</trans-unit>
-			
+
 		</body>
 	</file>
 </xliff>

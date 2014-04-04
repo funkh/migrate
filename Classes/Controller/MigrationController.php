@@ -25,6 +25,8 @@ namespace Enet\Migrate\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+
 /**
  *
  *
@@ -42,6 +44,20 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	protected $migrationRepository;
 
 	/**
+	 * migrationService
+	 *
+	 * @var \Enet\Migrate\Service\MigrationService
+	 * @inject
+	 */
+	protected $migrationService;
+
+	/**
+	 *
+	 */
+	public function initializeAction() {
+	}
+
+	/**
 	 * action list
 	 *
 	 * @return void
@@ -52,71 +68,20 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	}
 
 	/**
-	 * action show
+	 * action applyAllPackageMigrations
 	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $migration
 	 * @return void
 	 */
-	public function showAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		$this->view->assign('migration', $migration);
-	}
-
-	/**
-	 * action new
-	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $newMigration
-	 * @dontvalidate $newMigration
-	 * @return void
-	 */
-	public function newAction(\Enet\Migrate\Domain\Model\Migration $newMigration = NULL) {
-		$this->view->assign('newMigration', $newMigration);
-	}
-
-	/**
-	 * action create
-	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $newMigration
-	 * @return void
-	 */
-	public function createAction(\Enet\Migrate\Domain\Model\Migration $newMigration) {
-		$this->migrationRepository->add($newMigration);
-		$this->flashMessageContainer->add('Your new Migration was created.');
+	public function applyAllPackageMigrationsAction() {
+		$this->addFlashMessage(
+			'foo',
+			'bar',
+			FlashMessage::INFO
+		);
+		$this->migrationService->migrate();
 		$this->redirect('list');
 	}
 
-	/**
-	 * action edit
-	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $migration
-	 * @return void
-	 */
-	public function editAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		$this->view->assign('migration', $migration);
-	}
-
-	/**
-	 * action update
-	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $migration
-	 * @return void
-	 */
-	public function updateAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		$this->migrationRepository->update($migration);
-		$this->flashMessageContainer->add('Your Migration was updated.');
-		$this->redirect('list');
-	}
-
-	/**
-	 * action delete
-	 *
-	 * @param \Enet\Migrate\Domain\Model\Migration $migration
-	 * @return void
-	 */
-	public function deleteAction(\Enet\Migrate\Domain\Model\Migration $migration) {
-		$this->migrationRepository->remove($migration);
-		$this->flashMessageContainer->add('Your Migration was removed.');
-		$this->redirect('list');
-	}
 
 }
 ?>

@@ -4,7 +4,7 @@ namespace Enet\Migrate\Core\Driver;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014 Helge Funk <helge.funk@e-net.info>
+*  (c) 2014 Helge Funk <helge.funk@e-net.info>, e-net Consulting GmbH & Co. KG
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -63,6 +63,9 @@ abstract class AbstractFileMigrationDriver extends AbstractMigrationDriver {
 	public function hasNotAppliedMigrations() {
 		$notAppliedMigrationsCount = 0;
 		foreach ($this->configuration as $migrationFileName => $configuration) {
+			if (is_int($migrationFileName)) {
+				$migrationFileName = $configuration['file'];
+			}
 			if (!$this->hasMigration($migrationFileName)) {
 				$notAppliedMigrationsCount++;
 			}

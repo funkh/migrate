@@ -24,6 +24,8 @@ namespace Enet\Migrate\Core\Driver;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+
 /**
  * Registry for driver classes.
  *
@@ -48,7 +50,7 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 		$driverConfigurations = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers'];
 		foreach ($driverConfigurations as $shortName => $driverConfig) {
 			$shortName = $shortName ?: $driverConfig['shortName'];
-			$this->registerDriverClass($driverConfig['class'], $shortName, $driverConfig['label']);
+			$this->registerDriverClass($driverConfig['class'], $shortName, $driverConfig);
 		}
 	}
 
@@ -57,11 +59,11 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 	 *
 	 * @param string $className
 	 * @param string $shortName
-	 * @param string $label
+	 * @param array $driverConfig
 	 * @return boolean TRUE if registering succeeded
 	 * @throws \InvalidArgumentException
 	 */
-	public function registerDriverClass($className, $shortName = NULL, $label = NULL) {
+	public function registerDriverClass($className, $shortName = NULL, array $driverConfig) {
 		// check if the class is available for TYPO3 before registering the driver
 		if (!class_exists($className)) {
 			throw new \InvalidArgumentException('Class ' . $className . ' does not exist.', 1394973615);
@@ -85,8 +87,19 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 		$this->driverConfigurations[$shortName] = array(
 			'class' => $className,
 			'shortName' => $shortName,
-			'label' => $label,
+			'label' => $driverConfig['label'],
 		);
+
+		if ($this->driverImplementsInterface($shortName, 'Enet\Migrate\Core\Driver\MigrationDriverDataFileInterface')) {
+			if (!isset($driverConfig['dataFileExtensions']) || count($driverConfig['dataFileExtensions']) < 1) {
+				throw new \InvalidArgumentException(
+					$className . ' implements \Enet\Migrate\Core\Driver\MigrationDriverDataFileInterface and has to define at least one file extension.',
+					1400584635
+				);
+			}
+			$this->driverConfigurations[$shortName]['dataFileExtensions'] = $driverConfig['dataFileExtensions'];
+		}
+
 		return TRUE;
 	}
 
@@ -101,7 +114,7 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 		$driverFieldConfig = &$GLOBALS['TCA']['tx_migrate_domain_model_migration']['columns']['driver']['config'];
 		foreach ($this->driverConfigurations as $driver) {
 			$label = $driver['label'] ?: $driver['class'];
-			$driverFieldConfig['items'][] = array($label, $driver['class']);
+			$driverFieldConfig['items'][] = array($label, $driver['shortName']);
 		}
 	}
 
@@ -139,5 +152,27 @@ class MigrationDriverRegistry implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function driverExists($shortName) {
 		return array_key_exists($shortName, $this->drivers);
+	}
+
+	/**
+	 * @param string $shortName
+	 * @return array|null
+	 */
+	public function getDriverDataFileExtensions($shortName) {
+		if ($this->driverImplementsInterface($shortName, 'Enet\Migrate\Core\Driver\MigrationDriverDataFileInterface')) {
+			return $this->driverConfigurations[$shortName]['dataFileExtensions'];
+		} else {
+			return NULL;
+		}
+	}
+
+	/**
+	 * @param string $shortName
+	 * @param string $interfaceName
+	 * @return boolean
+	 */
+	public function driverImplementsInterface($shortName, $interfaceName) {
+		$driverClassReflection = new \ReflectionClass($this->getDriverClass($shortName));
+		return $driverClassReflection->implementsInterface($interfaceName);
 	}
 }

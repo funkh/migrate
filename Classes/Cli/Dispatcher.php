@@ -1,59 +1,52 @@
 <?php
 namespace Enet\Migrate\Cli;
 
-	/***************************************************************
-	 *  Copyright notice
-	 *
-	 *  (c) 2014 Thomas Christiansen <thomas.christiansen@e-net.info>
-	 *
-	 *  All rights reserved
-	 *
-	 *  This script is part of the TYPO3 project. The TYPO3 project is
-	 *  free software; you can redistribute it and/or modify
-	 *  it under the terms of the GNU General Public License as published by
-	 *  the Free Software Foundation; either version 3 of the License, or
-	 *  (at your option) any later version.
-	 *
-	 *  The GNU General Public License can be found at
-	 *  http://www.gnu.org/copyleft/gpl.html.
-	 *
-	 *  This script is distributed in the hope that it will be useful,
-	 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 *  GNU General Public License for more details.
-	 *
-	 *  This copyright notice MUST APPEAR in all copies of the script!
-	 ***************************************************************/
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2014 Thomas Christiansen <thomas.christiansen@e-net.info>
+ *
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
+/**
+ * Class Dispatcher
+ *
+ * @package Enet\Migrate\Cli
+ *
+ * @todo @tc: make this a command dispatcher, not a action command itself
+ */
 class Dispatcher extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 	/**
-	 * @var \Symfony\Component\Console\Output\ConsoleOutput
+	 * migrationService
+	 *
+	 * @var \Enet\Migrate\Service\MigrationService
+	 * @inject
 	 */
-	protected $output;
+	protected $migrationService;
 
-	public function __construct() {
-		$this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
-	}
-
+	/**
+	 *
+	 */
 	public function run() {
-		$this->output->write('Start package migrations... ');
-
-		/** @var \TYPO3\Flow\Package\PackageManager $packageManager */
-		$packageManager = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->getEarlyInstance('TYPO3\\Flow\\Package\\PackageManager');
-		foreach ($packageManager->getActivePackages() as $activePackage) {
-			/** @var $activePackage \TYPO3\Flow\Package\PackageInterface */
-			if (strpos($activePackage->getPackagePath(), PATH_typo3 . 'sysext') !== FALSE) {
-				// Skip system extensions
-				continue;
-			}
-			$migrationService = new \Enet\Migrate\Service\MigrationService($activePackage);
-			if ($migrationService->hasPackageMigrations($activePackage)) {
-				$migrationService->migratePackage($activePackage);
-			}
-		}
-
-		$this->output->write('<info>DONE</info>', TRUE);
+		$this->migrationService->migrate();
 	}
 
 }

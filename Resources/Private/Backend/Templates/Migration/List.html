@@ -1,4 +1,4 @@
-
+{namespace em=Enet\Migrate\ViewHelpers}
 <f:layout name="Default" />
 
 This Template is responsible for creating a table of domain objects.
@@ -13,31 +13,50 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="content">
-<h1>Listing for Migration</h1>
+<script type="text/javascript">
+	var dataTablesBootstrapJs = "{f:uri.resource(path:'Vendor/DataTables/Plugins/integration/bootstrap/3/dataTables.bootstrap.js')}";
+</script>
+<h1>Listing for Migrations</h1>
 
 <f:flashMessages />
+<div class="row">
+	<div class="col-md-12">
+		<table cellpadding="0" cellspacing="0" border="0" class="tx_migrate table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th><f:translate key="tx_migrate_domain_model_migration.uuid" /></th>
+					<th><f:translate key="tx_migrate_domain_model_migration.driver" /></th>
+					<th><f:translate key="tx_migrate_domain_model_migration.version" /></th>
+					<th><f:translate key="tx_migrate_domain_model_migration.extension_key" /></th>
+					<th><f:translate key="tx_migrate_domain_model_migration.applied" /></th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
 
-<table class="tx_migrate" >
-	<thead>
-		<tr>
-			<th><f:translate key="tx_migrate_domain_model_migration.driver" /></th>
-			<th><f:translate key="tx_migrate_domain_model_migration.version" /></th>
-			<th><f:translate key="tx_migrate_domain_model_migration.extension_key" /></th>
-			<th><f:translate key="tx_migrate_domain_model_migration.script_path" /></th>
-			<th><f:translate key="tx_migrate_domain_model_migration.applied" /></th>
-		</tr>
-	</thead>
+			<tbody>
+				<f:for each="{migrations}" as="migration">
+					<tr>
+						<td>{migration.uuid}</td>
+						<td>{migration.driver}</td>
+						<td>{migration.version}</td>
+						<td>{migration.extensionKey}</td>
+						<td class="{f:if(condition: '{migration.applied}', then: 'success', else: 'warning')}">{f:if(condition: '{migration.applied}', then: 'Yes', else: 'No')}</td>
+						<td>
+							<em:be.link.editRecord object="{migration}" />
+							<!--<em:be.link.newRecord className="Enet\Migrate\Domain\Model\Migration" />-->
+							<!--<em:be.link.deleteRecord object="{migration}" />-->
+						</td>
+					</tr>
+				</f:for>
+			</tbody>
+		</table>
+	</div>
+</div>
 
-	<tbody>
-		<f:for each="{migrations}" as="migration">
-			<tr>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.driver}</f:link.action></td>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.version}</f:link.action></td>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.extensionKey}</f:link.action></td>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.scriptPath}</f:link.action></td>
-				<td><f:link.action action="show" arguments="{migration : migration}"> {migration.applied}</f:link.action></td>
-			</tr>
-		</f:for>
-	</tbody>
-</table>
+<div class="row">
+	<div class="col-md-8">
+		<f:link.action action="applyAllPackageMigrations" class="btn btn-default">applyAllPackageMigrations</f:link.action>
+	</div>
+</div>
+
 </f:section>

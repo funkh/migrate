@@ -14,7 +14,7 @@ if (TYPO3_MODE === 'BE') {
 		'migrationlist',	// Submodule key
 		'',						// Position
 		array(
-			'Migration' => 'list',
+			'Migration' => 'list,applyAllPackageMigrations',
 		),
 		array(
 			'access' => 'user,group',

@@ -25,6 +25,8 @@ namespace Enet\Migrate\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  *
  *
@@ -32,6 +34,12 @@ namespace Enet\Migrate\Domain\Model;
  *
  */
 class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+
+	/**
+	 * uuid
+	 * @var string
+	 */
+	protected $uuid;
 
 	/**
 	 * driver
@@ -63,12 +71,14 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * scriptPath
 	 *
 	 * @var string
+	 * @deprecated
 	 */
 	protected $scriptPath = '';
 
 	/**
 	 * identifier
 	 * @var string
+	 * @deprecated
 	 */
 	protected $identifier;
 
@@ -85,6 +95,55 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var boolean
 	 */
 	protected $applied = FALSE;
+
+	/**
+	 * configuration
+	 * @var string
+	 */
+	protected $configuration;
+
+	/**
+	 * configurationHash
+	 * @var string
+	 */
+	protected $configurationHash;
+
+	/**
+	 * data
+	 * @var string
+	 */
+	protected $data;
+
+	/**
+	 * dataHash
+	 * @var string
+	 */
+	protected $dataHash;
+
+	/**
+	 * dataFile
+	 * @var string
+	 */
+	protected $dataFile;
+
+	/**
+	 * Getter for uuid
+	 *
+	 * @return string uuid
+	 */
+	public function getUuid() {
+		return $this->uuid;
+	}
+
+	/**
+	 * Setter for uuid
+	 *
+	 * @param string $uuid
+	 * @return void
+	 */
+	public function setUuid($uuid) {
+		$this->uuid = $uuid;
+	}
 
 	/**
 	 * Getter for driver
@@ -111,7 +170,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $version
 	 */
 	public function getVersion() {
-
 		return $this->version;
 	}
 
@@ -122,7 +180,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setVersion($version) {
-
 		$this->version = $version;
 	}
 
@@ -132,7 +189,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $extensionKey
 	 */
 	public function getExtensionKey() {
-
 		return $this->extensionKey;
 	}
 
@@ -172,7 +228,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $scriptPath
 	 */
 	public function getScriptPath() {
-
 		return $this->scriptPath;
 	}
 
@@ -183,7 +238,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setScriptPath($scriptPath) {
-
 		$this->scriptPath = $scriptPath;
 	}
 
@@ -231,7 +285,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return boolean $applied
 	 */
 	public function getApplied() {
-
 		return $this->applied;
 	}
 
@@ -242,7 +295,6 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setApplied($applied) {
-
 		$this->applied = $applied;
 	}
 
@@ -252,8 +304,105 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return boolean
 	 */
 	public function isApplied() {
-
 		return $this->getApplied();
+	}
+
+	/**
+	 * Getter for configuration
+	 *
+	 * @return array configuration
+	 */
+	public function getConfiguration() {
+		return Yaml::parse($this->configuration);
+	}
+
+	/**
+	 * Setter for configuration
+	 *
+	 * @param array $configuration
+	 * @return void
+	 */
+	public function setConfiguration(array $configuration) {
+		$this->configuration = Yaml::dump($configuration);
+		$this->setConfigurationHash(sha1($this->configuration));
+	}
+
+	/**
+	 * Getter for configurationHash
+	 *
+	 * @return string configurationHash
+	 */
+	public function getConfigurationHash() {
+		return $this->configurationHash;
+	}
+
+	/**
+	 * Setter for configurationHash
+	 *
+	 * @param string $configurationHash
+	 * @return void
+	 */
+	protected function setConfigurationHash($configurationHash) {
+		$this->configurationHash = $configurationHash;
+	}
+
+	/**
+	 * Getter for data
+	 *
+	 * @return array data
+	 */
+	public function getData() {
+		return Yaml::parse($this->data);
+	}
+
+	/**
+	 * Setter for data
+	 *
+	 * @param array $data
+	 * @return void
+	 */
+	public function setData(array $data) {
+		$this->data = Yaml::dump($data);
+		$this->setDataHash(sha1($this->data));
+	}
+
+	/**
+	 * Getter for dataHash
+	 *
+	 * @return string dataHash
+	 */
+	public function getDataHash() {
+		return $this->dataHash;
+	}
+
+	/**
+	 * Setter for dataHash
+	 *
+	 * @param string $dataHash
+	 * @return void
+	 */
+	protected function setDataHash($dataHash) {
+		$this->dataHash = $dataHash;
+	}
+
+	/**
+	 * Getter for dataFile
+	 *
+	 * @return string dataFile
+	 */
+	public function getDataFile() {
+		return $this->dataFile;
+	}
+
+	/**
+	 * Setter for dataFile
+	 *
+	 * @param string $dataFile
+	 * @return void
+	 */
+	public function setDataFile($dataFile) {
+		$this->dataFile = $dataFile;
+		$this->setDataHash(sha1_file($dataFile));
 	}
 
 }

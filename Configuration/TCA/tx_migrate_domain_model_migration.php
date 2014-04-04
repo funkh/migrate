@@ -31,13 +31,17 @@ return array(
 		'adminOnly' => 1, // Only admin, if any
 		'rootLevel' => 1,
 		'searchFields' => 'type,version,extension_key,script_path,query,applied,',
-		'iconfile' => 'EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('migrate') . 'Resources/Public/Icons/tx_migrate_domain_model_migration.png'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, driver, version, extension_key, extension_version, script_path, identifier, configuration, raw_data, applied',
+		'showRecordFieldList' => 'hidden, uuid, driver, version, extension_key, extension_version, identifier, configuration, configuration_hash, data, data_file, data_hash, applied',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, driver, version, extension_key, extension_version, script_path, identifier, configuration, raw_data, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' =>
+			'hidden;;1, uuid, driver, version, extension_key, extension_version, applied,
+			--div--;Configuration, configuration, configuration_hash,
+			--div--;Data, data, data_file, data_hash
+		'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -124,6 +128,16 @@ return array(
 				),
 			),
 		),
+		'uuid' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.uuid',
+			'config' => array(
+				'type' => 'input',
+				'size' => 36,
+				'readOnly' => TRUE,
+				'eval' => 'trim'
+			),
+		),
 		'driver' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.driver',
@@ -142,6 +156,7 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 10,
+				'readOnly' => TRUE,
 				'eval' => 'trim'
 			),
 		),
@@ -151,6 +166,7 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
+				'readOnly' => TRUE,
 				'eval' => 'trim'
 			),
 		),
@@ -160,15 +176,7 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim'
-			),
-		),
-		'script_path' => array(
-			'exclude' => 0,
-			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.script_path',
-			'config' => array(
-				'type' => 'input',
-				'size' => 100,
+				'readOnly' => TRUE,
 				'eval' => 'trim'
 			),
 		),
@@ -191,13 +199,43 @@ return array(
 				'eval' => 'trim'
 			),
 		),
-		'raw_data' => array(
+		'configuration_hash' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.raw_data',
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.configuration_hash',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'readOnly' => TRUE,
+				'eval' => 'trim'
+			),
+		),
+		'data' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.data',
 			'config' => array(
 				'type' => 'text',
 				'cols' => 40,
 				'rows' => 15,
+				'eval' => 'trim'
+			),
+		),
+		'data_file' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.data_file',
+			'config' => array(
+				'type' => 'input',
+				'size' => 60,
+				'readOnly' => TRUE,
+				'eval' => 'trim'
+			),
+		),
+		'data_hash' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.data_hash',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'readOnly' => TRUE,
 				'eval' => 'trim'
 			),
 		),
