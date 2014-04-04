@@ -34,10 +34,10 @@ return array(
 		'iconfile' => 'EXT:migrate/Resources/Public/Icons/tx_migrate_domain_model_migration.gif'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, driver, version, extension_key, extension_version, script_path, identifier, raw_data, applied',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, driver, version, extension_key, extension_version, script_path, identifier, configuration, raw_data, applied',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, driver, version, extension_key, extension_version, script_path, identifier, raw_data, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, driver, version, extension_key, extension_version, script_path, identifier, configuration, raw_data, applied,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -178,6 +178,16 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 100,
+				'eval' => 'trim'
+			),
+		),
+		'configuration' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:migrate/Resources/Private/Language/locallang_db.xlf:tx_migrate_domain_model_migration.configuration',
+			'config' => array(
+				'type' => 'text',
+				'cols' => 40,
+				'rows' => 15,
 				'eval' => 'trim'
 			),
 		),

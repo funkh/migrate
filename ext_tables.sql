@@ -13,6 +13,7 @@ CREATE TABLE tx_migrate_domain_model_migration (
 	extension_version varchar(255) DEFAULT '' NOT NULL,
 	script_path varchar(255) DEFAULT '' NOT NULL,
 	identifier varchar(255) DEFAULT '' NOT NULL,
+	configuration text NOT NULL,
 	raw_data text NOT NULL,
 	applied tinyint(1) unsigned DEFAULT '0' NOT NULL,
 

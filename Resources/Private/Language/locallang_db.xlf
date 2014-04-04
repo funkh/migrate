@@ -25,8 +25,11 @@
 			<trans-unit id="tx_migrate_domain_model_migration.identifier">
 				<source>Identifier</source>
 			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.configuration">
+				<source>Configuration</source>
+			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.raw_data">
-				<source>Raw data</source>
+				<source>Data</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.applied">
 				<source>Applied</source>
