@@ -1,5 +1,5 @@
 <?php
-namespace Enet\Migrate\Core\Driver\Exception;
+namespace Enet\Migrate\Core\Driver;
 
 /***************************************************************
  *  Copyright notice
@@ -26,10 +26,10 @@ namespace Enet\Migrate\Core\Driver\Exception;
  ***************************************************************/
 
 /**
- * Class InvalidDriverConfigurationException
+ * Class Exception
  *
- * @package Enet\Migrate\Core\Driver\Exception
+ * @package Enet\Migrate\Core\Driver
  */
-class InvalidDriverConfigurationException extends \Enet\Migrate\Core\Driver\Exception {
+class Exception extends \Enet\Migrate\Core\Exception {
 
 }
