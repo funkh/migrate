@@ -25,7 +25,7 @@ namespace Enet\Migrate\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Enet\Migrate\MigrationDriver\MigrationDriverInterface;
+use Enet\Migrate\Core\Driver\MigrationDriverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -104,8 +104,8 @@ class MigrationService {
 		$this->output->writeln('');
 		$this->output->writeln('<info>Migrating ' . $package->getPackageKey() . '...</info>');
 
-		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
-		$driverRegistry = $this->objectManager->get('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
+		/** @var $driverRegistry \Enet\Migrate\Core\Driver\MigrationDriverRegistry */
+		$driverRegistry = $this->objectManager->get('Enet\Migrate\Core\Driver\MigrationDriverRegistry');
 		foreach ($this->getMigrationVersions($package) as $migrationVersion) {
 			if (!$this->hasPackageMigrationVersionNotAppliedMigrations($package, $migrationVersion)) {
 				continue;
@@ -113,7 +113,7 @@ class MigrationService {
 			$this->output->write('----------------------------------', TRUE);
 			$this->output->write('<info>Version:</info> ' . $migrationVersion, TRUE);
 			foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
-				/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */
+				/** @var \Enet\Migrate\Core\Driver\MigrationDriverInterface $driver */
 				$driver = $this->objectManager->get($driverClassName, $package, $migrationVersion);
 				if ($driver->hasNotAppliedMigrations()) {
 					$driver->migrate();
@@ -129,10 +129,10 @@ class MigrationService {
 	 */
 	public function hasPackageMigrationVersionNotAppliedMigrations(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion) {
 		$hasPackageNotAppliedMigrations = FALSE;
-		/** @var $driverRegistry \Enet\Migrate\MigrationDriver\MigrationDriverRegistry */
-		$driverRegistry = $this->objectManager->get('Enet\Migrate\MigrationDriver\MigrationDriverRegistry');
+		/** @var $driverRegistry \Enet\Migrate\Core\Driver\MigrationDriverRegistry */
+		$driverRegistry = $this->objectManager->get('Enet\Migrate\Core\Driver\MigrationDriverRegistry');
 		foreach ($driverRegistry->getDriverClassNames() as $driverClassName) {
-			/** @var \Enet\Migrate\MigrationDriver\MigrationDriverInterface $driver */
+			/** @var \Enet\Migrate\Core\Driver\MigrationDriverInterface $driver */
 			$driver = $this->objectManager->get($driverClassName, $package, $migrationVersion);
 			if ($driver->hasNotAppliedMigrations()) {
 				return TRUE;

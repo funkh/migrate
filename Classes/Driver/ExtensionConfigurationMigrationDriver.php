@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,11 +25,14 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver;
-
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
+use Enet\Migrate\Core\Driver\AbstractFileMigrationDriver;
 
+/**
+ * Class ExtensionConfigurationMigrationDriver
+ *
+ * @package Enet\Migrate\Driver
+ */
 class ExtensionConfigurationMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**

@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver\SysTemplate;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,22 +25,20 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver\SysTemplate;
-
-use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
+use Enet\Migrate\Core\Driver\AbstractFileMigrationDriver;
 
 /**
- * Class TypoScriptSetupMigrationDriver
+ * Class TypoScriptConstantsMigrationDriver
  *
  * @package Enet\Migrate\Driver\SysTemplate
  */
-class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
+class TypoScriptConstantsMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/Template/Setup';
+		return 'TypoScript/Template/Constants';
 	}
 
 	/**
@@ -49,8 +49,7 @@ class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 	}
 
 	/**
-	 * @return bool
-	 * @throws \RuntimeException
+	 * @return bool|void
 	 */
 	public function migrate() {
 		if (!$this->hasNotAppliedMigrations()) {
@@ -69,13 +68,13 @@ class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 					'sys_template',
 					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'config' => $typoScript,
+						'constants' => $typoScript,
 						'tstamp' => time()
 					)
 				);
 			} else {
 				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'config',
+					'constants',
 					'sys_template',
 					'uid = ' . (int) $configuration['templateUid']
 				);
@@ -86,7 +85,7 @@ class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 					'sys_template',
 					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'config' => $row['config'] . PHP_EOL .  $typoScript,
+						'constants' => $row['constants'] . PHP_EOL .  $typoScript,
 						'tstamp' => time()
 					)
 				);

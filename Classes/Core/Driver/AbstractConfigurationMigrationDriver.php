@@ -1,5 +1,5 @@
 <?php
-namespace Enet\Migrate\MigrationDriver;
+namespace Enet\Migrate\Core\Driver;
 
 /***************************************************************
 *  Copyright notice
@@ -24,12 +24,10 @@ namespace Enet\Migrate\MigrationDriver;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
-
 /**
  * Class AbstractConfigurationMigrationDriver
  *
- * @package Enet\Migrate\Driver
+ * @package Enet\Migrate\Core\Driver
  */
 abstract class AbstractConfigurationMigrationDriver extends AbstractMigrationDriver {
 

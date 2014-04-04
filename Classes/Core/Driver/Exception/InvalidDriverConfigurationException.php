@@ -1,5 +1,5 @@
 <?php
-namespace Enet\Migrate\MigrationDriver\Exception;
+namespace Enet\Migrate\Core\Driver\Exception;
 
 /***************************************************************
  *  Copyright notice

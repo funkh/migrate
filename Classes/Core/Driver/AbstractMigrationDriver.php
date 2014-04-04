@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Core\Driver;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,10 +25,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver;
-
-use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+use Enet\Migrate\Core\Driver\Exception\InvalidDriverConfigurationException;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -35,7 +36,7 @@ use TYPO3\Flow\Utility\Files;
 /**
  * Class AbstractMigrationDriver
  *
- * @package Enet\Migrate\Driver
+ * @package Enet\Migrate\Core\Driver
  */
 abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 
@@ -116,6 +117,18 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	abstract protected function validateConfiguration(array $configuration);
 
 	/**
+	 *
+	 */
+	protected function getMigrationIdentifier() {
+		$hashValues = array(
+			get_class($this),
+			$this->package->getPackageKey(),
+			$this->migrationVersion,
+		);
+		return md5(implode('', $hashValues));
+	}
+
+	/**
 	 * @param string $script
 	 * @param string $rawData
 	 * @return bool|\mysqli_result|object
@@ -137,8 +150,10 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 				'version' => (int) $this->migrationVersion,
 				'extension_key' => $this->package->getPackageKey(),
 				'extension_version' => $this->getPackageVersion(),
+				'identifier' => $this->getMigrationIdentifier(),
 				'script_path' => $this->getConfigurationPath() . DIRECTORY_SEPARATOR . $script,
 				'applied' => TRUE,
+				'configuration' => Yaml::dump($this->configuration),
 				'raw_data' => $rawData,
 			)
 		);

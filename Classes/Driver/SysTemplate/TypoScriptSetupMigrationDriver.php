@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver\SysTemplate;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,22 +25,20 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver;
-
-use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
+use Enet\Migrate\Core\Driver\AbstractFileMigrationDriver;
 
 /**
- * Class PageTsConfigMigrationDriver
+ * Class TypoScriptSetupMigrationDriver
  *
- * @package Enet\Migrate\MigrationDriver\Driver
+ * @package Enet\Migrate\Driver\SysTemplate
  */
-class PageTsConfigMigrationDriver extends AbstractFileMigrationDriver {
+class TypoScriptSetupMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'TypoScript/PageTsConfig';
+		return 'TypoScript/Template/Setup';
 	}
 
 	/**
@@ -49,7 +49,8 @@ class PageTsConfigMigrationDriver extends AbstractFileMigrationDriver {
 	}
 
 	/**
-	 * @return bool|void
+	 * @return bool
+	 * @throws \RuntimeException
 	 */
 	public function migrate() {
 		if (!$this->hasNotAppliedMigrations()) {
@@ -63,29 +64,29 @@ class PageTsConfigMigrationDriver extends AbstractFileMigrationDriver {
 				continue;
 			}
 
-			if($configuration['mode'] === 'overwrite') {
+			if ($configuration['mode'] === 'overwrite') {
 				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'TSconfig' => $typoScript,
+						'config' => $typoScript,
 						'tstamp' => time()
 					)
 				);
 			} else {
 				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-					'TSconfig',
-					'pages',
-					'uid = ' . (int) $configuration['pageUid']
+					'config',
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid']
 				);
 				if (is_null($row)) {
 					continue;
 				}
 				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
-					'pages',
-					'uid = ' . (int) $configuration['pageUid'],
+					'sys_template',
+					'uid = ' . (int) $configuration['templateUid'],
 					array(
-						'TSconfig' => $row['TSconfig'] . PHP_EOL .  $typoScript,
+						'config' => $row['config'] . PHP_EOL .  $typoScript,
 						'tstamp' => time()
 					)
 				);

@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Core\Driver;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,9 +25,11 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver;
-
-
+/**
+ * Interface MigrationDriverInterface
+ *
+ * @package Enet\Migrate\Core\Driver
+ */
 interface MigrationDriverInterface {
 
 	const BASE_PATH = 'Migration';

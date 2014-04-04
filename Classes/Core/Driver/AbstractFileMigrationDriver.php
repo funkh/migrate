@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Core\Driver;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,16 +24,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver;
-
-use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+use Enet\Migrate\Core\Driver\Exception\InvalidDriverConfigurationException;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\Flow\Utility\Files;
 
 /**
- * Class AbstractSysTemplateMigrationDriver
+ * Class AbstractFileMigrationDriver
  *
- * @package Enet\Migrate\Driver
+ * @package Enet\Migrate\Core\Driver
  */
 abstract class AbstractFileMigrationDriver extends AbstractMigrationDriver {
 

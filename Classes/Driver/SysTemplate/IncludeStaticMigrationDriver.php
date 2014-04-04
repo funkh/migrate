@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver\SysTemplate;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,10 +25,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver\SysTemplate;
-
-use Enet\Migrate\MigrationDriver\AbstractConfigurationMigrationDriver;
-use Enet\Migrate\MigrationDriver\Exception\InvalidDriverConfigurationException;
+use Enet\Migrate\Core\Driver\AbstractConfigurationMigrationDriver;
+use Enet\Migrate\Core\Driver\Exception\InvalidDriverConfigurationException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

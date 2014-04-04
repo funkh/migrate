@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,9 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver;
-
-use Enet\Migrate\MigrationDriver\AbstractConfigurationMigrationDriver;
+use Enet\Migrate\Core\Driver\AbstractConfigurationMigrationDriver;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -36,7 +36,7 @@ use TYPO3\Flow\Utility\Files;
 /**
  * Class FalMigrationDriver
  *
- * @package Enet\Migrate\MigrationDriver\Driver
+ * @package Enet\Migrate\Driver
  */
 class FalMigrationDriver extends AbstractConfigurationMigrationDriver {
 

@@ -1,4 +1,6 @@
 <?php
+namespace Enet\Migrate\Driver;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,32 +25,27 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace Enet\Migrate\MigrationDriver\Driver;
+use Enet\Migrate\Core\Driver\AbstractFileMigrationDriver;
 
-use Enet\Migrate\MigrationDriver\AbstractFileMigrationDriver;
-
-class DatabaseMigrationDriver extends AbstractFileMigrationDriver {
+/**
+ * Class PageTsConfigMigrationDriver
+ *
+ * @package Enet\Migrate\Driver
+ */
+class PageTsConfigMigrationDriver extends AbstractFileMigrationDriver {
 
 	/**
 	 * @return string
 	 */
 	public function getConfigurationPath() {
-		return 'Database';
+		return 'TypoScript/PageTsConfig';
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getConfigurationFileExtensions() {
-		return array('sql');
-	}
-
-	/**
-	 *
-	 */
-	protected function setConfiguration() {
-		parent::setConfiguration();
-		$this->sortDatabaseMigrationsByPriority();
+		return array('ts', 'txt');
 	}
 
 	/**
@@ -61,25 +58,47 @@ class DatabaseMigrationDriver extends AbstractFileMigrationDriver {
 
 		foreach ($this->configuration as $migrationFileName => $configuration) {
 			$migrationPathAndFileName = $this->getAbsoluteConfigurationPath() . $migrationFileName;
-
-			// @todo: validate sql
-			$sqlStatements = $this->getSqlStatements(file_get_contents($migrationPathAndFileName));
-			if (count($sqlStatements) === 0) {
+			$typoScript = file_get_contents($migrationPathAndFileName);
+			if (strlen($typoScript) === 0) {
 				continue;
 			}
 
-			$sqlErrors = 0;
-			foreach ($sqlStatements as $statement) {
-				$res = $this->getDatabaseConnection()->sql_query($statement);
-				if ($res === FALSE || $this->getDatabaseConnection()->sql_errno() !== 0) {
-					$sqlErrors++;
+			if($configuration['mode'] === 'overwrite') {
+				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+					'pages',
+					'uid = ' . (int) $configuration['pageUid'],
+					array(
+						'TSconfig' => $typoScript,
+						'tstamp' => time()
+					)
+				);
+			} else {
+				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+					'TSconfig',
+					'pages',
+					'uid = ' . (int) $configuration['pageUid']
+				);
+				if (is_null($row)) {
+					continue;
 				}
+				$res = $this->getDatabaseConnection()->exec_UPDATEquery(
+					'pages',
+					'uid = ' . (int) $configuration['pageUid'],
+					array(
+						'TSconfig' => $row['TSconfig'] . PHP_EOL .  $typoScript,
+						'tstamp' => time()
+					)
+				);
 			}
 
-			if ($sqlErrors === 0) {
+			if (
+				$res !== FALSE
+				&& $this->getDatabaseConnection()->sql_errno() === 0
+				&& $this->getDatabaseConnection()->sql_affected_rows() === 1
+			) {
 				$this->addMigration(
 					$migrationFileName,
-					implode(CRLF, $sqlStatements)
+					$typoScript
 				);
 			}
 		}
@@ -87,26 +106,4 @@ class DatabaseMigrationDriver extends AbstractFileMigrationDriver {
 		return TRUE;
 	}
 
-	/**
-	 * @param $sql
-	 * @return array
-	 */
-	protected function getSqlStatements($sql) {
-		$sqlSchemaMigrationService = new \TYPO3\CMS\Install\Service\SqlSchemaMigrationService();
-		return $sqlSchemaMigrationService->getStatementArray($sql, TRUE);
-	}
-
-	/**
-	 *
-	 */
-	protected function sortDatabaseMigrationsByPriority() {
-		if (!is_array($this->configuration['Database'])) {
-			return;
-		}
-		$priority = array();
-		foreach ($this->configuration['Database'] as $configuration) {
-			$priority[] = (int) $configuration['priority'];
-		}
-		array_multisort($priority, SORT_ASC, $this->configuration['Database']);
-	}
 }
