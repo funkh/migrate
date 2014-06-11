@@ -33,20 +33,20 @@ class ComposerUtility {
 	/**
 	 * @var string
 	 */
-	protected static $composerAutoloadFile = 'Packages/autoload.php';
+	protected static $composerAutoloadFile = 'Packages/Libraries/autoload.php';
 
 	/**
 	 * @var string
 	 */
-	protected static $composerAutoloadRealFile = 'Packages/composer/autoload_real.php';
+	protected static $composerAutoloadRealFile = 'Packages/Libraries/composer/autoload_real.php';
 
 	/**
 	 *
 	 */
 	public static function initializeAutoloading() {
-		if (file_exists(self::$composerAutoloadFile) && file_exists(self::$composerAutoloadRealFile)) {
-			require_once self::$composerAutoloadRealFile;
-			require_once self::$composerAutoloadFile;
+		if (file_exists(PATH_site . self::$composerAutoloadFile) && file_exists(PATH_site . self::$composerAutoloadRealFile)) {
+			require_once PATH_site . self::$composerAutoloadRealFile;
+			require_once PATH_site . self::$composerAutoloadFile;
 		} else {
 			// @todo: handle this case
 		}
