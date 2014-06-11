@@ -76,6 +76,7 @@ class MigrationService {
 	 */
 	public function __construct() {
 		\Enet\Migrate\Utility\ComposerUtility::initializeAutoloading();
+		$this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
 	}
 
 	/**
