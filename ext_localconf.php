@@ -23,11 +23,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['SysTempl
 	'shortName' => 'SysTemplate',
 	'label' => 'SysTemplate'
 );
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Fal'] = array(
-	'class' => 'Enet\Migrate\Driver\FalMigrationDriver',
-	'shortName' => 'Fal',
-	'label' => 'Fal'
-);
+//$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Fal'] = array(
+//	'class' => 'Enet\Migrate\Driver\FalMigrationDriver',
+//	'shortName' => 'Fal',
+//	'label' => 'Fal'
+//);
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['T3d'] = array(
 	'class' => 'Enet\Migrate\Driver\T3dMigrationDriver',
 	'shortName' => 'T3d',
