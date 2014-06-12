@@ -24,7 +24,7 @@ namespace Enet\Migrate\Driver;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Enet\Migrate\Core\Driver\AbstractConfigurationMigrationDriver;
+use Enet\Migrate\Core\Driver\AbstractDataMigrationDriver;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -38,7 +38,7 @@ use TYPO3\Flow\Utility\Files;
  *
  * @package Enet\Migrate\Driver
  */
-class FalMigrationDriver extends AbstractConfigurationMigrationDriver {
+class FalMigrationDriver extends AbstractDataMigrationDriver {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Resource\StorageRepository
@@ -52,30 +52,29 @@ class FalMigrationDriver extends AbstractConfigurationMigrationDriver {
 	protected $allowedFileReferenceTables = array('pages', 'tt_content');
 
 	/**
-	 * @return string
+	 *
 	 */
-	public function getConfigurationPath() {
-		return 'Fal';
-	}
-
-	/**
-	 * @param array $configuration
-	 */
-	protected function validateConfiguration(array $configuration) {
+	public function initializeArguments() {
+		$this->registerArgument('targetFolder', 'string', TRUE, '/');
+		$this->registerArgument('storageUid', 'integer', TRUE, 0);
+		parent::initializeArguments();
 
 	}
-
 	/**
 	 * @return bool
 	 * @throws \Exception
 	 */
 	public function migrate() {
-		if (!$this->hasNotAppliedMigrations()) {
-			return TRUE;
-		}
+		$this->initializeArguments();
+
+		/** @var \Enet\Migrate\Domain\Model\MigrationResult $result */
+		$result = $this->objectManager->get('Enet\Migrate\Domain\Model\MigrationResult');
 
 		// @todo add _cli_migrate user with concrete uid
 		$GLOBALS['BE_USER']->user['uid'] = 0;
+
+		\Enet\Migrate\Utility\DebuggerUtility::var_dump($this->data, __FILE__, __LINE__);
+		\Enet\Migrate\Utility\DebuggerUtility::var_dump($this->arguments, __FILE__, __LINE__);
 
 		$path = $this->getAbsoluteConfigurationBasePath() . 'Files.yaml';
 		if (is_file($path)) {
@@ -166,12 +165,13 @@ class FalMigrationDriver extends AbstractConfigurationMigrationDriver {
 							}
 						}
 					}
-					$this->addMigration($fileData['file'], var_export($fileData, TRUE));
 				}
 			}
 		}
 
-		return TRUE;
+		$result->addError('fooooo');
+
+		return $result;
 	}
 
 	/**
