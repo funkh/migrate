@@ -1,5 +1,5 @@
 /* Set the defaults for DataTables initialisation */
-$.extend( true, $.fn.dataTable.defaults, {
+jQuery.extend( true, jQuery.fn.dataTable.defaults, {
 	"sDom":
 		"<'row'<'col-xs-6'l><'col-xs-6'f>r>"+
 		"t"+
@@ -11,7 +11,7 @@ $.extend( true, $.fn.dataTable.defaults, {
 
 
 /* Default class modification */
-$.extend( $.fn.dataTableExt.oStdClasses, {
+jQuery.extend( jQuery.fn.dataTableExt.oStdClasses, {
 	"sWrapper": "dataTables_wrapper form-inline",
 	"sFilterInput": "form-control input-sm",
 	"sLengthSelect": "form-control input-sm"
@@ -19,10 +19,10 @@ $.extend( $.fn.dataTableExt.oStdClasses, {
 
 // In 1.10 we use the pagination renderers to draw the Bootstrap paging,
 // rather than  custom plug-in
-if ( $.fn.dataTable.Api ) {
-	$.fn.dataTable.defaults.renderer = 'bootstrap';
-	$.fn.dataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
-		var api = new $.fn.dataTable.Api( settings );
+if ( jQuery.fn.dataTable.Api ) {
+	jQuery.fn.dataTable.defaults.renderer = 'bootstrap';
+	jQuery.fn.dataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
+		var api = new jQuery.fn.dataTable.Api( settings );
 		var classes = settings.oClasses;
 		var lang = settings.oLanguage.oPaginate;
 		var btnDisplay, btnClass;
@@ -39,7 +39,7 @@ if ( $.fn.dataTable.Api ) {
 			for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
 				button = buttons[i];
 
-				if ( $.isArray( button ) ) {
+				if ( jQuery.isArray( button ) ) {
 					attach( container, button );
 				}
 				else {
@@ -84,7 +84,7 @@ if ( $.fn.dataTable.Api ) {
 					}
 
 					if ( btnDisplay ) {
-						node = $('<li>', {
+						node = jQuery('<li>', {
 								'class': classes.sPageButton+' '+btnClass,
 								'aria-controls': settings.sTableId,
 								'tabindex': settings.iTabIndex,
@@ -92,7 +92,7 @@ if ( $.fn.dataTable.Api ) {
 									settings.sTableId +'_'+ button :
 									null
 							} )
-							.append( $('<a>', {
+							.append( jQuery('<a>', {
 									'href': '#'
 								} )
 								.html( btnDisplay )
@@ -108,17 +108,17 @@ if ( $.fn.dataTable.Api ) {
 		};
 
 		attach(
-			$(host).empty().html('<ul class="pagination"/>').children('ul'),
+			jQuery(host).empty().html('<ul class="pagination"/>').children('ul'),
 			buttons
 		);
 	}
 }
 else {
 	// Integration for 1.9-
-	$.fn.dataTable.defaults.sPaginationType = 'bootstrap';
+	jQuery.fn.dataTable.defaults.sPaginationType = 'bootstrap';
 
 	/* API method to get paging information */
-	$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
+	jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 	{
 		return {
 			"iStart":         oSettings._iDisplayStart,
@@ -134,7 +134,7 @@ else {
 	};
 
 	/* Bootstrap style pagination control */
-	$.extend( $.fn.dataTableExt.oPagination, {
+	jQuery.extend( jQuery.fn.dataTableExt.oPagination, {
 		"bootstrap": {
 			"fnInit": function( oSettings, nPaging, fnDraw ) {
 				var oLang = oSettings.oLanguage.oPaginate;
@@ -145,15 +145,15 @@ else {
 					}
 				};
 
-				$(nPaging).append(
+				jQuery(nPaging).append(
 					'<ul class="pagination">'+
 						'<li class="prev disabled"><a href="#">&larr; '+oLang.sPrevious+'</a></li>'+
 						'<li class="next disabled"><a href="#">'+oLang.sNext+' &rarr; </a></li>'+
 					'</ul>'
 				);
-				var els = $('a', nPaging);
-				$(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
-				$(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
+				var els = jQuery('a', nPaging);
+				jQuery(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
+				jQuery(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
 			},
 
 			"fnUpdate": function ( oSettings, fnDraw ) {
@@ -179,31 +179,31 @@ else {
 
 				for ( i=0, ien=an.length ; i<ien ; i++ ) {
 					// Remove the middle elements
-					$('li:gt(0)', an[i]).filter(':not(:last)').remove();
+					jQuery('li:gt(0)', an[i]).filter(':not(:last)').remove();
 
 					// Add the new list items and their event handlers
 					for ( j=iStart ; j<=iEnd ; j++ ) {
 						sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
-						$('<li '+sClass+'><a href="#">'+j+'</a></li>')
-							.insertBefore( $('li:last', an[i])[0] )
+						jQuery('<li '+sClass+'><a href="#">'+j+'</a></li>')
+							.insertBefore( jQuery('li:last', an[i])[0] )
 							.bind('click', function (e) {
 								e.preventDefault();
-								oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
+								oSettings._iDisplayStart = (parseInt(jQuery('a', this).text(),10)-1) * oPaging.iLength;
 								fnDraw( oSettings );
 							} );
 					}
 
 					// Add / remove disabled classes from the static elements
 					if ( oPaging.iPage === 0 ) {
-						$('li:first', an[i]).addClass('disabled');
+						jQuery('li:first', an[i]).addClass('disabled');
 					} else {
-						$('li:first', an[i]).removeClass('disabled');
+						jQuery('li:first', an[i]).removeClass('disabled');
 					}
 
 					if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
-						$('li:last', an[i]).addClass('disabled');
+						jQuery('li:last', an[i]).addClass('disabled');
 					} else {
-						$('li:last', an[i]).removeClass('disabled');
+						jQuery('li:last', an[i]).removeClass('disabled');
 					}
 				}
 			}
@@ -216,9 +216,9 @@ else {
  * TableTools Bootstrap compatibility
  * Required TableTools 2.1+
  */
-if ( $.fn.DataTable.TableTools ) {
+if ( jQuery.fn.DataTable.TableTools ) {
 	// Set the classes that TableTools uses to something suitable for Bootstrap
-	$.extend( true, $.fn.DataTable.TableTools.classes, {
+	jQuery.extend( true, jQuery.fn.DataTable.TableTools.classes, {
 		"container": "DTTT btn-group",
 		"buttons": {
 			"normal": "btn btn-default",
@@ -240,7 +240,7 @@ if ( $.fn.DataTable.TableTools ) {
 	} );
 
 	// Have the collection use a bootstrap compatible dropdown
-	$.extend( true, $.fn.DataTable.TableTools.DEFAULTS.oTags, {
+	jQuery.extend( true, jQuery.fn.DataTable.TableTools.DEFAULTS.oTags, {
 		"collection": {
 			"container": "ul",
 			"button": "li",
