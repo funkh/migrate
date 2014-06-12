@@ -24,6 +24,7 @@ namespace Enet\Migrate\Utility;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  *
@@ -33,22 +34,47 @@ class ComposerUtility {
 	/**
 	 * @var string
 	 */
-	protected static $composerAutoloadFile = 'Packages/Libraries/autoload.php';
+	protected static $composerAutoloadFile = 'autoload.php';
 
 	/**
 	 * @var string
 	 */
-	protected static $composerAutoloadRealFile = 'Packages/Libraries/composer/autoload_real.php';
+	protected static $composerAutoloadRealFile = 'composer/autoload_real.php';
 
 	/**
-	 *
+	 * @throws \RuntimeException
 	 */
 	public static function initializeAutoloading() {
-		if (file_exists(PATH_site . self::$composerAutoloadFile) && file_exists(PATH_site . self::$composerAutoloadRealFile)) {
-			require_once PATH_site . self::$composerAutoloadRealFile;
-			require_once PATH_site . self::$composerAutoloadFile;
+		$absoluteComposerAutoloadFilePath = self::getAbsoluteComposerVendorDir() . self::$composerAutoloadFile;
+		$absoluteComposerAutoloadRealFilePath = self::getAbsoluteComposerVendorDir() . self::$composerAutoloadRealFile;
+		if (file_exists($absoluteComposerAutoloadFilePath) && file_exists($absoluteComposerAutoloadRealFilePath)) {
+			require_once $absoluteComposerAutoloadRealFilePath;
+			require_once $absoluteComposerAutoloadFilePath;
 		} else {
-			// @todo: handle this case
+			throw new \RuntimeException(
+				'Composer autoload not initialized, autoload files missing.',
+				1402490526
+			);
 		}
+	}
+
+	/**
+	 * @return string
+	 * @throws \RuntimeException
+	 */
+	protected function getAbsoluteComposerVendorDir() {
+		$composerConfigurationPath = PATH_site . 'composer.json';
+		if (!file_exists($composerConfigurationPath)) {
+			throw new \RuntimeException('composer.json does not exist. This seems to be no composer project!!!', 1402493622);
+		}
+		$composerConfiguration = json_decode(file_get_contents($composerConfigurationPath));
+		if (!isset($composerConfiguration->config->{'vendor-dir'})) {
+			throw new \RuntimeException('vendor-dir in composer.json is not set.', 1402493665);
+		}
+		$vendorDir = PATH_site . $composerConfiguration->config->{'vendor-dir'};
+		if (!is_dir($vendorDir)) {
+			throw new \RuntimeException('vendor dir does not exist.', 1402493656);
+		}
+		return PathUtility::sanitizeTrailingSeparator($vendorDir);
 	}
 }
