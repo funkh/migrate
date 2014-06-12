@@ -11,25 +11,19 @@
 				<source>UUID</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.driver">
-				<source>driver</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.type">
-				<source>type</source>
+				<source>Driver</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.version">
-				<source>version</source>
+				<source>Version</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.extension_key">
-				<source>extensionKey</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.script_path">
-				<source>scriptPath</source>
-			</trans-unit>
-			<trans-unit id="tx_migrate_domain_model_migration.query">
-				<source>query</source>
+				<source>Package</source>
 			</trans-unit>
 			<trans-unit id="tx_migrate_domain_model_migration.applied">
-				<source>applied</source>
+				<source>Applied</source>
+			</trans-unit>
+			<trans-unit id="tx_migrate_domain_model_migration.action.applyAllPackageMigrations">
+				<source>Apply package migrations</source>
 			</trans-unit>
 
 		</body>

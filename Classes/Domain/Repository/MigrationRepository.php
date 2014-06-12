@@ -104,5 +104,16 @@ class MigrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $migrations;
 	}
 
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+	 */
+	public function findNotApplied() {
+		$query = $this->createQuery();
+		$constraints = array(
+			$query->equals('applied', FALSE),
+		);
+		$query->matching($query->logicalAnd($constraints));
+		return $query->execute();
+	}
 }
 ?>

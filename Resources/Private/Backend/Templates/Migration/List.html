@@ -53,10 +53,14 @@ Otherwise your changes will be overwritten the next time you save the extension 
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-md-8">
-		<f:link.action action="applyAllPackageMigrations" class="btn btn-default">applyAllPackageMigrations</f:link.action>
+<f:if condition="{notAppliedMigrations -> f:count()}">
+	<div class="row">
+		<div class="col-md-8">
+			<f:link.action action="applyAllPackageMigrations" class="btn btn-default">
+				<f:translate key="tx_migrate_domain_model_migration.action.applyAllPackageMigrations" />
+			</f:link.action>
+		</div>
 	</div>
-</div>
+</f:if>
 
 </f:section>

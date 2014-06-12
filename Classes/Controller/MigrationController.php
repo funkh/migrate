@@ -63,8 +63,8 @@ class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
 	 * @return void
 	 */
 	public function listAction() {
-		$migrations = $this->migrationRepository->findAll();
-		$this->view->assign('migrations', $migrations);
+		$this->view->assign('migrations', $this->migrationRepository->findAll());
+		$this->view->assign('notAppliedMigrations', $this->migrationRepository->findNotApplied());
 	}
 
 	/**
