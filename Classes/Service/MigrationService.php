@@ -352,9 +352,6 @@ class MigrationService {
 	}
 
 	/**
-	 * @return string
-	 */
-	/**
 	 * @param \TYPO3\Flow\Package\PackageInterface $package
 	 * @param integer $migrationVersion
 	 * @param string $driverShortName

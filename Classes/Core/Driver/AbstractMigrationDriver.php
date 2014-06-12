@@ -102,7 +102,7 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 	public function validateArguments(array $arguments) {
 		foreach ($this->argumentDefinitions as $argumentName => $argumentDefinition) {
 			/** @var ArgumentDefinition $argumentDefinition */
-			if ($argumentDefinition->isRequired() && (!isset($this->arguments[$argumentName]) || empty($this->arguments[$argumentName]))) {
+			if ($argumentDefinition->isRequired() && !isset($this->arguments[$argumentName])) {
 				throw new \InvalidArgumentException(
 					'The argument "' . $argumentName . '" is required and was not set in migration driver "' . get_class($this) . '"',
 					1398702705
@@ -129,6 +129,7 @@ abstract class AbstractMigrationDriver implements MigrationDriverInterface {
 				continue;
 			}
 
+			// @todo: validate different types, with specific methods like empty(string), count(array), ???(integer) etc
 			switch($registeredArgumentDefinition->getType()) {
 				case 'array':
 					if (!is_array($argumentValue) && !$argumentValue instanceof \ArrayAccess && !$argumentValue instanceof \Traversable) {
