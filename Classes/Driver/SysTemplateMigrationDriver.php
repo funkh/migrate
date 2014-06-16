@@ -157,7 +157,8 @@ class SysTemplateMigrationDriver extends AbstractDataMigrationDriver {
 
 		// @todo: integrate ordering!?
 		$includeStaticFiles = GeneralUtility::trimExplode(',', $row['include_static_file'], TRUE);
-		ArrayUtility::mergeRecursiveWithOverrule($includeStaticFiles, $includeStaticFilesToMerge);
+
+		$includeStaticFiles = array_unique(array_merge($includeStaticFiles,$includeStaticFilesToMerge));
 
 		$res = DatabaseUtility::getDatabaseConnection()->exec_UPDATEquery(
 			'sys_template',
