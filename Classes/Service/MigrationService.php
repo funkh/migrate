@@ -271,7 +271,7 @@ class MigrationService {
 				}
 			}
 		} catch (InvalidPackageConfigurationException $e) {
-			DebuggerUtility::var_dump($e->getMessage(), __FILE__, __LINE__);
+			DebuggerUtility::var_dump($package->getPackageKey() . ' | Invalid package configuration: ' . $e->getMessage(), __FILE__, __LINE__);
 		}
 	}
 
@@ -303,7 +303,7 @@ class MigrationService {
 				if ($this->driverRegistry->driverImplementsInterface($driverShortName, 'Enet\Migrate\Core\Driver\MigrationDriverDataInterface')) {
 					if (empty($migration['data']) && !is_array($migration['data'])) {
 						throw new InvalidPackageConfigurationException(
-							'Data has to be defined in data property.',
+							'Data has to be defined in data property for uuid = ' . $uuid,
 							1400584600
 						);
 					}
@@ -312,7 +312,7 @@ class MigrationService {
 				if ($this->driverRegistry->driverImplementsInterface($driverShortName, 'Enet\Migrate\Core\Driver\MigrationDriverDataFileInterface')) {
 					if (empty($migration['dataFile'])) {
 						throw new InvalidPackageConfigurationException(
-							'Data file has to be defined in dataFile property.',
+							'Data file has to be defined in dataFile property for uuid = ' . $uuid,
 							1397509641
 						);
 					}
