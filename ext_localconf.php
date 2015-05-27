@@ -45,5 +45,11 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Sql'] = 
 	'label' => 'Sql',
 	'dataFileExtensions' => array('sql'),
 );
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['registeredDrivers']['Php'] = array(
+	'class' => 'Enet\Migrate\Driver\PhpMigrationDriver',
+	'shortName' => 'Php',
+	'label' => 'Php',
+	'dataFileExtensions' => array('php'),
+);
 
 ?>
