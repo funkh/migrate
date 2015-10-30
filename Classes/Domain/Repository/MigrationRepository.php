@@ -73,6 +73,7 @@ class MigrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$query = $this->createQuery();
 		$constraints = array(
 			$query->equals('applied', FALSE),
+			$query->equals('hidden', FALSE),
 		);
 		if (!is_null($packageKey)) {
 			$constraints[] = $query->equals('extensionKey', $packageKey);
@@ -93,6 +94,7 @@ class MigrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$query = $this->createQuery();
 		$constraints = array(
 			$query->equals('applied', FALSE),
+			$query->equals('hidden', FALSE),
 			$query->equals('extensionKey', $packageKey),
 		);
 		$query->matching($query->logicalAnd($constraints));
@@ -111,6 +113,7 @@ class MigrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$query = $this->createQuery();
 		$constraints = array(
 			$query->equals('applied', FALSE),
+			$query->equals('hidden', FALSE),
 		);
 		$query->matching($query->logicalAnd($constraints));
 		return $query->execute();

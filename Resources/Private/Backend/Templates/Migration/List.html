@@ -35,7 +35,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 			<tbody>
 				<f:for each="{migrations}" as="migration">
-					<tr>
+					<tr style="{f:if(condition: '{migration.hidden} > {migration.applied}', then: 'opacity: 0.42;', else: '')}">
 						<td>{migration.uuid}</td>
 						<td>{migration.driver}</td>
 						<td>{migration.version}</td>

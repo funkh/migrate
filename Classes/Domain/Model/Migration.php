@@ -127,6 +127,11 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $dataFile;
 
 	/**
+	 * @var boolean
+	 */
+	protected $hidden;
+
+	/**
 	 * Getter for uuid
 	 *
 	 * @return string uuid
@@ -403,6 +408,20 @@ class Migration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function setDataFile($dataFile) {
 		$this->dataFile = $dataFile;
 		$this->setDataHash(sha1_file($dataFile));
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getHidden() {
+		return $this->hidden;
+	}
+
+	/**
+	 * @param boolean $hidden
+	 */
+	public function setHidden($hidden) {
+		$this->hidden = $hidden;
 	}
 
 }
