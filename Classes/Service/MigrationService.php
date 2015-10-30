@@ -248,6 +248,7 @@ class MigrationService {
 							$migration->setExtensionKey($package->getPackageKey());
 							$migration->setExtensionVersion(PackageUtility::getPackageVersion($package));
 							$migration->setApplied(FALSE);
+							$migration->setHidden($this->isBlacklisted($package->getPackageKey(), $migrationVersion));
 
 							if (is_array($migrationData['configuration'])) {
 								$migration->setConfiguration($migrationData['configuration']);
@@ -367,5 +368,22 @@ class MigrationService {
 			$dataFileName
 		));
 		return $dataFilePathAndName;
+	}
+
+	protected function isBlacklisted($packageKey, $migrationVersion) {
+		$result = FALSE;
+		$packageBlacklist = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['packageBlacklist'];
+		if (isset($packageBlacklist[$packageKey])) {
+			$versionList = $packageBlacklist[$packageKey];
+			if (empty($versionList)) {
+				$result = TRUE; // applies to all versions
+			} else {
+				$versions = explode(',', $packageBlacklist[$packageKey]);
+				if (in_array($migrationVersion, $versions)) {
+					$result = TRUE;
+				}
+			}
+		}
+		return $result;
 	}
 }
