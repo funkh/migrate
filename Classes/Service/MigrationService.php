@@ -80,7 +80,9 @@ class MigrationService {
 	 *
 	 */
 	public function __construct() {
-		\Enet\Migrate\Utility\ComposerUtility::initializeAutoloading();
+		if (!getenv('TYPO3_COMPOSER_AUTOLOAD')) {
+			\Enet\Migrate\Utility\ComposerUtility::initializeAutoloading();
+		}
 		$this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
 	}
 
