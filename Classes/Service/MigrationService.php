@@ -72,6 +72,11 @@ class MigrationService {
 	protected $persistenceManager;
 
 	/**
+	 * @var array
+	 */
+	protected $configuration;
+
+	/**
 	 *
 	 */
 	public function __construct() {
@@ -85,7 +90,25 @@ class MigrationService {
 	 * @return void
 	 */
 	public function initializeObject() {
+		$this->setProjectConfiguration();
 		$this->initialize();
+	}
+
+	/**
+	 *
+	 */
+	protected function setProjectConfiguration() {
+		$composerFilePath = PATH_site . 'composer.json';
+		if (file_exists($composerFilePath)) {
+			try {
+				$json = json_decode(file_get_contents($composerFilePath), TRUE);
+				if (!is_null($json) && isset($json['config']) && is_array($json['config']['migrate'])) {
+					$this->configuration = $json['config']['migrate'];
+				}
+			} catch (\Exception $e) {
+				$this->configuration = array();
+			}
+		}
 	}
 
 	/**
@@ -96,6 +119,10 @@ class MigrationService {
 	public function initialize() {
 		foreach ($this->getActivePackages() as $package) {
 			/** @var $package \TYPO3\Flow\Package\PackageInterface */
+			if (in_array($package->getPackageKey(), $this->configuration['exclude'])) {
+				$this->output->writeln('<comment>  Package: ' . $package->getPackageKey() . ' has been excluded.</comment>');
+				continue;
+			}
 			$this->initializePackageMigrations($package);
 		}
 	}
