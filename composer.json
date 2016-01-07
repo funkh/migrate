@@ -10,7 +10,7 @@
 		}
 	],
 	"require": {
-		"enet/typo3-cms-installers": "1.0.*",
+		"typo3/cms-composer-installers": "^1.2.5",
 		"symfony/yaml": "2.6.*",
 		"symfony/console": "2.6.*"
 	}
