@@ -13,5 +13,10 @@
 		"typo3/cms-composer-installers": "^1.2.5",
 		"symfony/yaml": "~2.7.0",
 		"symfony/console": "~2.7.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Enet\\Migrate\\": "Classes/"
+		}
 	}
 }
