@@ -1,6 +1,14 @@
-var Migrate = {
-	initializeDataTables: function() {
-		jQuery('.tx_migrate').dataTable({
+define([
+	'jquery',
+	'bootstrap',
+	'datatables.net',
+	'datatables.bootstrap'
+], function($) {
+
+	var Migrate = {};
+
+	Migrate.initializeDataTables = function() {
+		$('.tx_migrate').dataTable({
 			"order": [[ 3, "desc" ]],
 			"columnDefs": [
 //				{
@@ -13,10 +21,12 @@ var Migrate = {
 				}
 			]
 		});
-	}
-};
+	};
 
+	$(function() {
+		Migrate.initializeDataTables();
+	});
 
-jQuery(function() {
-	Migrate.initializeDataTables();
+	return Migrate;
+
 });

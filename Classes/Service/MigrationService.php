@@ -30,7 +30,7 @@ use Enet\Migrate\Service\MigrationService\Exception\InvalidPackageConfigurationE
 use Enet\Migrate\Utility\PackageUtility;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\Flow\Utility\Files;
+use Enet\Migrate\Utility\FilesUtility;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use Enet\Migrate\Utility\DebuggerUtility;
@@ -75,7 +75,7 @@ class MigrationService {
 	 *
 	 */
 	public function __construct() {
-		if (!getenv('TYPO3_COMPOSER_AUTOLOAD')) {
+		if (!getenv('TYPO3_COMPOSER_MODE')) {
 			\Enet\Migrate\Utility\ComposerUtility::initializeAutoloading();
 		}
 		$this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
@@ -97,7 +97,7 @@ class MigrationService {
 	 */
 	public function initialize() {
 		foreach ($this->getActivePackages() as $package) {
-			/** @var $package \TYPO3\Flow\Package\PackageInterface */
+			/** @var $package \TYPO3\CMS\Core\Package\PackageInterface */
 			$packageBlacklist = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['migrate']['packageBlacklist'];
 			if (is_array($packageBlacklist) && in_array($package->getPackageKey(), $packageBlacklist)) {
 				$this->output->writeln('<comment>  Package: ' . $package->getPackageKey() . ' has been excluded.</comment>');
@@ -108,14 +108,14 @@ class MigrationService {
 	}
 
 	/**
-	 * @return array<\TYPO3\Flow\Package\PackageInterface>
+	 * @return array<\TYPO3\CMS\Core\Package\PackageInterface>
 	 */
 	protected function getActivePackages() {
 		$packages = array();
-		/** @var \Enet\Composer\Typo3\Cms\Package\ComposerAdaptedPackageManager $packageManager */
-		$packageManager = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->getEarlyInstance('TYPO3\Flow\Package\PackageManager');
+		/** @var \TYPO3\CMS\Core\Package\PackageManager $packageManager */
+		$packageManager = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->getEarlyInstance('TYPO3\CMS\Core\Package\PackageManager');
 		foreach ($packageManager->getActivePackages() as $package) {
-			/** @var $package \TYPO3\Flow\Package\PackageInterface */
+			/** @var $package \TYPO3\CMS\Core\Package\PackageInterface */
 			if (
 				strpos($package->getPackagePath(), PATH_typo3 . 'sysext') !== FALSE
 				|| strpos($package->getPackagePath(), PATH_site . 'Packages') !== FALSE
@@ -153,7 +153,7 @@ class MigrationService {
 		$this->output->writeln('Start package migrations... ');
 
 		foreach ($this->getActivePackages() as $package) {
-			/** @var $package \TYPO3\Flow\Package\PackageInterface */
+			/** @var $package \TYPO3\CMS\Core\Package\PackageInterface */
 
 			if (!$this->migrationRepository->hasNotAppliedMigrations($package->getPackageKey())) {
 				continue;
@@ -207,10 +207,10 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 * @return array
 	 */
-	protected function getMigrationVersions(\TYPO3\Flow\Package\PackageInterface $package) {
+	protected function getMigrationVersions(\TYPO3\CMS\Core\Package\PackageInterface $package) {
 		$migrationVersions = array();
 		if (!is_dir($package->getPackagePath() . MigrationDriverInterface::BASE_PATH)) {
 			return $migrationVersions;
@@ -228,9 +228,9 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 */
-	protected function initializePackageMigrations(\TYPO3\Flow\Package\PackageInterface $package) {
+	protected function initializePackageMigrations(\TYPO3\CMS\Core\Package\PackageInterface $package) {
 		try {
 			foreach ($this->getMigrationVersions($package) as $migrationVersion) {
 				$yamlConfigurationPathAndFileName = $this->getYamlConfigurationPathAndFileName($package, $migrationVersion);
@@ -284,12 +284,12 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 * @param integer $migrationVersion
 	 * @param array $configuration
 	 * @throws MigrationService\Exception\InvalidPackageConfigurationException
 	 */
-	protected function validateConfiguration(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion, array $configuration) {
+	protected function validateConfiguration(\TYPO3\CMS\Core\Package\PackageInterface $package, $migrationVersion, array $configuration) {
 
 		foreach($configuration as $driverShortName => $driverConfiguration) {
 
@@ -346,12 +346,12 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 * @param $migrationVersion
 	 * @return string
 	 */
-	public function getYamlConfigurationPathAndFileName(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion) {
-		return Files::concatenatePaths(array(
+	public function getYamlConfigurationPathAndFileName(\TYPO3\CMS\Core\Package\PackageInterface $package, $migrationVersion) {
+		return FilesUtility::concatenatePaths(array(
 			$package->getPackagePath(),
 			MigrationDriverInterface::BASE_PATH,
 			$migrationVersion,
@@ -360,14 +360,14 @@ class MigrationService {
 	}
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 * @param integer $migrationVersion
 	 * @param string $driverShortName
 	 * @param string $dataFileName
 	 * @return string
 	 */
-	public function getDataFilePathAndName(\TYPO3\Flow\Package\PackageInterface $package, $migrationVersion, $driverShortName, $dataFileName) {
-		$dataFilePathAndName = Files::concatenatePaths(array(
+	public function getDataFilePathAndName(\TYPO3\CMS\Core\Package\PackageInterface $package, $migrationVersion, $driverShortName, $dataFileName) {
+		$dataFilePathAndName = FilesUtility::concatenatePaths(array(
 			$package->getPackagePath(),
 			MigrationDriverInterface::BASE_PATH,
 			$migrationVersion,

@@ -180,7 +180,7 @@ class FalMigrationDriver extends AbstractDataMigrationDriver {
 	 */
 	public function getAbsoluteResourceStorageBasePath(ResourceStorage $storage) {
 		$storageConfiguration = $storage->getConfiguration();
-		$absoluteBasePath = Files::concatenatePaths(array(
+		$absoluteBasePath = FilesUtility::concatenatePaths(array(
 			PATH_site,
 			$storageConfiguration['basePath']
 		));

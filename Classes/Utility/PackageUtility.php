@@ -31,11 +31,11 @@ namespace Enet\Migrate\Utility;
 class PackageUtility {
 
 	/**
-	 * @param \TYPO3\Flow\Package\PackageInterface $package
+	 * @param \TYPO3\CMS\Core\Package\PackageInterface $package
 	 * @return null|string
 	 * @throws \Exception
 	 */
-	public static function getPackageVersion(\TYPO3\Flow\Package\PackageInterface $package) {
+	public static function getPackageVersion(\TYPO3\CMS\Core\Package\PackageInterface $package) {
 		$packageVersion = NULL;
 		if (is_null($package->getPackageMetaData()->getVersion())) {
 			$_EXTKEY = $package->getPackageKey();
