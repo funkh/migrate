@@ -10,8 +10,13 @@
 		}
 	],
 	"require": {
-		"enet/typo3-cms-installers": "1.0.*",
 		"symfony/yaml": "2.6.*",
-		"symfony/console": "2.6.*"
-	}
+		"symfony/console": "2.6.*",
+        "typo3/cms": ">=6.2.19"
+    },
+    "autoload": {
+        "psr-4": {
+            "Enet\\Migrate\\": "Classes/"
+        }
+    }
 }
