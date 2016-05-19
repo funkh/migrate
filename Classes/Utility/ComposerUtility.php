@@ -63,7 +63,7 @@ class ComposerUtility {
 	 * @throws \RuntimeException
 	 */
 	protected function getAbsoluteComposerVendorDir() {
-		$composerConfigurationPath = PATH_site . 'composer.json';
+		$composerConfigurationPath = PATH_site . '../composer.json';
 		if (!file_exists($composerConfigurationPath)) {
 			throw new \RuntimeException('composer.json does not exist. This seems to be no composer project!!!', 1402493622);
 		}

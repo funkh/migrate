@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Migrate',
-	'description' => 'Supplies different migration drivers to migrate database and configuration stuff...',
+	'description' => 'Supplies different migration drivers to migrate database and configuration stuff... for LTS 7',
 	'category' => 'plugin',
 	'author' => 'Helge Funk',
 	'author_email' => 'helge.funk@e-net.info',
@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
-	'version' => '1.3.0',
+	'version' => '2.0.1',
 	'constraints' => array(
 		'depends' => array(
 		),
