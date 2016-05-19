@@ -63,7 +63,8 @@ class ComposerUtility {
 	 * @throws \RuntimeException
 	 */
 	protected function getAbsoluteComposerVendorDir() {
-		$composerConfigurationPath = PATH_site . '../composer.json';
+		$vendorDirPathPrefix = '../';
+		$composerConfigurationPath = PATH_site . $vendorDirPathPrefix . 'composer.json';
 		if (!file_exists($composerConfigurationPath)) {
 			throw new \RuntimeException('composer.json does not exist. This seems to be no composer project!!!', 1402493622);
 		}
@@ -71,7 +72,7 @@ class ComposerUtility {
 		if (!isset($composerConfiguration->config->{'vendor-dir'})) {
 			throw new \RuntimeException('vendor-dir in composer.json is not set.', 1402493665);
 		}
-		$vendorDir = PATH_site . $composerConfiguration->config->{'vendor-dir'};
+		$vendorDir = PATH_site . $vendorDirPathPrefix . $composerConfiguration->config->{'vendor-dir'};
 		if (!is_dir($vendorDir)) {
 			throw new \RuntimeException('vendor dir does not exist.', 1402493656);
 		}
