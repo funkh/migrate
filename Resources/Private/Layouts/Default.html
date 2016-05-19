@@ -1,0 +1,19 @@
+<f:be.pageRenderer
+	loadJQuery="true"
+	jQueryNamespace="none"
+
+	includeCssFiles="{
+		0: '{f:uri.resource(path:\'Vendor/DataTables/DataTables/media/css/jquery.dataTables.css\')}',
+		1: '{f:uri.resource(path:\'Vendor/DataTables/DataTables/media/css/dataTables.bootstrap.css\')}'
+	}"
+	includeRequireJsModules="{
+		0: 'jquery',
+		1: 'bootstrap',
+		2: 'datatables.net',
+		3: 'datatables.bootstrap',
+		4: 'TYPO3/CMS/Migrate/Migrate'
+	}"
+	/>
+
+
+<f:render section="content" />

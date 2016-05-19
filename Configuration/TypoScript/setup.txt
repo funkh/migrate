@@ -5,8 +5,8 @@ module.tx_migrate {
 		storagePid = {$module.tx_migrate.persistence.storagePid}
 	}
 	view {
-		templateRootPath = {$module.tx_migrate.view.templateRootPath}
-		partialRootPath = {$module.tx_migrate.view.partialRootPath}
-		layoutRootPath = {$module.tx_migrate.view.layoutRootPath}
+		templateRootPaths.0 = {$module.tx_migrate.view.templateRootPath}
+		partialRootPaths.0 = {$module.tx_migrate.view.partialRootPath}
+		layoutRootPaths.0 = {$module.tx_migrate.view.layoutRootPath}
 	}
 }

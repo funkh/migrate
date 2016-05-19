@@ -26,6 +26,8 @@ namespace Enet\Migrate\Controller;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  *
@@ -33,55 +35,97 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class MigrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
 
-	/**
-	 * migrationRepository
-	 *
-	 * @var \Enet\Migrate\Domain\Repository\MigrationRepository
-	 * @inject
-	 */
-	protected $migrationRepository;
+    /**
+     * @var string
+     */
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
-	/**
-	 * migrationService
-	 *
-	 * @var \Enet\Migrate\Service\MigrationService
-	 * @inject
-	 */
-	protected $migrationService;
+    /**
+     * @var BackendTemplateView
+     */
+    protected $view;
 
-	/**
-	 *
-	 */
-	public function initializeAction() {
-	}
+    /**
+     * migrationRepository
+     *
+     * @var \Enet\Migrate\Domain\Repository\MigrationRepository
+     * @inject
+     */
+    protected $migrationRepository;
 
-	/**
-	 * action list
-	 *
-	 * @return void
-	 */
-	public function listAction() {
-		$this->view->assign('migrations', $this->migrationRepository->findAll());
-		$this->view->assign('notAppliedMigrations', $this->migrationRepository->findNotApplied());
-	}
+    /**
+     * migrationService
+     *
+     * @var \Enet\Migrate\Service\MigrationService
+     * @inject
+     */
+    protected $migrationService;
 
-	/**
-	 * action applyAllPackageMigrations
-	 *
-	 * @return void
-	 */
-	public function applyAllPackageMigrationsAction() {
-		$this->addFlashMessage(
-			'foo',
-			'bar',
-			FlashMessage::INFO
-		);
-		$this->migrationService->migrate();
-		$this->redirect('list');
-	}
+    /**
+     *
+     */
+    public function initializeAction()
+    {
+    }
 
+    /**
+     * action list
+     *
+     * @return void
+     */
+    public function listAction()
+    {
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = $this->objectManager->get('TYPO3\CMS\Core\Page\PageRenderer');
+
+        $fullPublicPath = 'EXT:migrate/Resources/Public/';
+        $fullPublicPath = GeneralUtility::getFileAbsFileName($fullPublicPath);
+        $fullPublicPath = \TYPO3\CMS\Core\Utility\PathUtility::getRelativePath(PATH_typo3, $fullPublicPath);
+
+        // Add jquery.dataTables module with it's vendor default module name,
+        // so the dependency in dataTables.bootstrap could be solved
+        $pageRenderer->addRequireJsConfiguration(array(
+            'paths' => array(
+                'datatables.net' => $pageRenderer->backPath . $fullPublicPath . 'Vendor/DataTables/DataTables/media/js/jquery.dataTables',
+                'datatables.bootstrap' => $pageRenderer->backPath . $fullPublicPath . 'Vendor/DataTables/DataTables/media/js/dataTables.bootstrap',
+            )
+        ));
+
+        $this->prepareDocHeaderMenu();
+
+        $this->view->assign('migrations', $this->migrationRepository->findAll());
+        $this->view->assign('notAppliedMigrations', $this->migrationRepository->findNotApplied());
+    }
+
+    /**
+     * action applyAllPackageMigrations
+     *
+     * @return void
+     */
+    public function applyAllPackageMigrationsAction()
+    {
+        $this->addFlashMessage(
+            'foo',
+            'bar',
+            FlashMessage::INFO
+        );
+        $this->migrationService->migrate();
+        $this->redirect('list');
+    }
+
+    /**
+     * DocHeaderMenu
+     */
+    protected function prepareDocHeaderMenu()
+    {
+        $this->view->getModuleTemplate()->setModuleName('typo3-module-migrate');
+        $this->view->getModuleTemplate()->setModuleId('typo3-module-migrate');
+        $this->view->getModuleTemplate()->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
+    }
 
 }
+
 ?>
